@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lost</title>
+	<meta charset="UTF-8">
+	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/register.css')}}">
+</head>
+<body>
+	<div class="center-div">
+		<h1>Register</h1>
+		<input type="radio" name="usertype" id="customerRegister" autocomplete="off" onClick="whichFormClicked()"> 
+		Customer	
+		<input type="radio" name="usertype" id="bookingAgentRegister" autocomplete="off" onClick="whichFormClicked()"> 
+		Booking Agent	
+		<input type="radio" name="usertype" id="airlineStaffRegister" autocomplete="off" onClick="whichFormClicked()"> 
+		Airline Staff
+		<br>
+		<form class="whichForm" id="customerForm" autocomplete="off">
+			Email <br><input type="text" name="email" class="registerFormText"><br>
+			Name <br><input type="text" name="name" class="registerFormText"><br>
+			Password <br><input type="password" name="password" class="registerFormText"><br>
+			Building No <br><input type="text" name="buildingNo" class="registerFormText"><br>
+			Street <br><input type="text" name="street" class="registerFormText"><br>
+			City <br><input type="text" name="city" class="registerFormText"><br>
+			State <br><input type="text" name="state" class="registerFormText"><br>
+			Phone Number <br><input type="text" name="phoneNum" class="registerFormText"><br>
+			Passport Number <br><input type="text" name="passportNo" class="registerFormText"><br>
+			Passport Expiration <br><input type="text" name="passportExp" class="registerFormText"><br>
+			Passport Country <br><input type="text" name="passportCntry" class="registerFormText"><br>
+			Date of Birth <br><input type="text" name="dateOfBirth" class="registerFormText"><br>
+			<input type="submit" id="submit">
+		</form>
+		<form class="whichForm" id="bookingAgentForm" autocomplete="off">
+			Email <br><input type="text" name="email" class="registerFormText"><br>
+			Password <br><input type="password" name="password" class="registerFormText"><br>
+			Booking Agent Id <br><input type="text" name="bookingAgentId" class="registerFormText"><br>
+			<input type="submit" id="submit">
+		</form>
+		<form class="whichForm" id="airlineStaffForm"  autocomplete="off">
+			First Name  <br><input type="text" name="fname" class="registerFormText"><br>
+			Last Name  <br><input type="text" name="lname" class="registerFormText"><br>
+			Username <br><input type="text" name="username" class="registerFormText"><br>
+			Password <br><input type="password" name="password" class="registerFormText"><br>
+			Date of Birth <br><input type="text" name="dateOfBirth" class="registerFormText"><br>
+			Airline Name <br><input type="text" name="airline_name" class="registerFormText"><br>
+			<input type="submit" id="submit">
+		</form>
+		
+	</div>
+	<script type="text/javascript" src="{{url_for('static',filename='js/register.js')}}"></script>
+</body>
+</html>

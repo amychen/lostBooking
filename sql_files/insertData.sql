@@ -50,7 +50,6 @@ insert into customer values ('123@gmail.com', 'Andy Chen', 'hotPotato', 911, 'Bl
 -- d
 insert into airplane values ('Delta', 'Boeing 737', 200);
 insert into airplane values ('Malaysia Airlines', 'Boeing 757', 430);
-insert into airplane values ('Delta', 'Boeing 737', 220);
 insert into airplane values ('China Eastern', 'Boeing 737', 137);
 insert into airplane values ('China Eastern', 'Airbus A320', 240);
 insert into airplane values ('United Airlines', 'Airbus A380', 850);
@@ -62,8 +61,8 @@ insert into airplane values ('Cathay Pacific', 'Boeing 676', 871);
 insert into airplane values ('Hainan Airlines', 'Boeing 757', 535);
 insert into airplane values ('Alaska Airlines', 'Boeing 787', 683);
 insert into airplane values ('Southwest Airlines', 'Boeing 757', 137);	
-insert into airplane values ('British Airlines', 'Boeing 747', 230);	
-insert into airplane values ('Ethihad Airlines', 'Boeing 747', 240);
+insert into airplane values ('British Airways', 'Boeing 747', 230);	
+insert into airplane values ('Ethihad Airways', 'Boeing 747', 240);
 insert into airplane values ('Air New Zealand', 'McDonnell Douglas DC-9', 350);		
 
 -- e
@@ -72,15 +71,15 @@ insert into airline_staff values ('amychen', 'abcd1234!', 'Amy', 'Chen', '1998-0
 -- f 
 insert into flight values ('Delta', 267, 'JFK', 090920, 'SFO', 171008, 314.89, 'UPCOMING', 'Boeing 737');
 insert into flight values ('China Eastern', 587, 'PVG', 091059, 'JFK', 233050, 580.33, 'DELAYED', 'Airbus A320');
-insert into flight values ('United Airlines', 297, 'PVG', 'JFK', 213005, 103070, 857.79, 'IN-PROGRESS', 'Airbus A380');
+insert into flight values ('United Airlines', 297, 'PVG', 213005, 'JFK', 103070, 857.79, 'IN-PROGRESS', 'Airbus A380');
 
 -- g
-insert into ticket values ('JR900', 'Delta', 267);
-insert into ticket values ('MN100', 'China Eastern', 587);
-insert into ticket values ('NU877', 'United Airlines', 297);
+insert into ticket values (12345, 'Delta', 267);
+insert into ticket values (54321, 'China Eastern', 587);
+insert into ticket values (32154, 'United Airlines', 297);
 
 insert into booking_agent values ('myemail@mu.com', 'password', 123456321432);
 insert into booking_agent values ('dummy@gmail.com', 'dummy', 999999999999);
 
-insert into purchases values ('NU877', '123@gmail.com', 123456321432, '2018-07-07');
-insert into purchases values ('JR900', 'abc@gmail.com', 999999999999, '2018-08-19');
+insert into purchases values (12345, '123@gmail.com', 123456321432, '2018-07-07');
+insert into purchases values (54321, 'abc@gmail.com', 999999999999, '2018-08-19');

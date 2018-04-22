@@ -8,7 +8,7 @@
 body{
 	background-repeat: no-repeat;
     background-size: cover;
-    background: url(/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/travel.jpg);
+    background-image: url('/static/img/travel.jpg');
 }
 
 a {

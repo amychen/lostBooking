@@ -3,8 +3,8 @@
 <head>
 	<title>Lost Bookings</title>
 	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/css/login.css">
-	<!-- <link rel="stylesheet" type="text/css" hrefs="{{url_for('static',filename='css/login.css')}}"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/css/login.css"> -->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/login.css')}}">
 </head>
 <body>
 	<div id="login_div">
@@ -16,10 +16,10 @@
 			<h3>Password</h3>
 			<br><input type=password name="password" id="password" autocomplete="off"><br><br>
 			<input type="submit" id="submit"><br><br><br>
-			<a href="index.html"> Go Back </a>
+			<a href="/"> Go Back </a>
 		</form>
 	</div>
-	<script type="text/javascript" src="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/login.js"></script>
-	<!-- <script type="text/javascript" src="{{url_for('static',filename='js/login.js')}}"></script> -->
+	<!-- <script type="text/javascript" src="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/login.js"></script> -->
+	<script type="text/javascript" src="{{url_for('static',filename='js/login.js')}}"></script>
 </body>
 </html>

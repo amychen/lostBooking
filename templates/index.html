@@ -3,17 +3,15 @@
 <head>
 	<title>Lost Bookings</title>
 	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/css/index.css">
-	<!-- <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/index.css')}}"> -->
+	<!-- <link rel="stylesheet" type="text/css" href="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/css/index.css"> -->
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/index.css')}}">
 </head>
-<body>
+<body style="background-image: url('/static/travel.jpg')">
 	<div id="topbar">
-		<a href="login.html">Login</a>
-		<a href="register.html">Register</a>
+		<a href="login">Login</a>
+		<a href="register">Register</a>
 	</div>
-
-	<h1 id="headerName"> Lost Booking </h1>
-
+	<h1 id="headerName">Lost Booking</h1>
 	<div id="search">
 		<form>
 			<input type="text" placeholder="Search for flights..." name="search" id="searchinput" autocomplete="off">
@@ -28,8 +26,7 @@
 		<div id="dates">
 		</div>
 	</div>
-
-	<script type="text/javascript" src="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/index.js"></script>
-	<!-- <script type="text/javascript" src="{{url_for('static',filename='js/index.js')}}"></script> -->
+	<!-- <script type="text/javascript" src="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/index.js"></script> -->
+	<script type="text/javascript" src="{{url_for('static',filename='js/index.js')}}"></script>
 </body>
 </html>

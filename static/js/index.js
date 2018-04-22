@@ -65,5 +65,5 @@ function getCalendar(day_no, days){
 	}
 
 	return table;
-
 }
+

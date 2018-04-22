@@ -1,6 +1,7 @@
 *{
 	font-family: 'Noto Serif', serif;
 	color: #383838;
+	overflow: hidden;
 }
 
 .center-div{
@@ -33,4 +34,8 @@ h1{
 
 input[type="radio"]{
 	margin: 10px
+} 
+
+a {
+	text-decoration: none;
 }

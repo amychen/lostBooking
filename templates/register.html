@@ -10,42 +10,43 @@
 <body>
 	<div class="center-div">
 		<h1>Register</h1>
-		<input type="radio" name="usertype" id="customerRegister" onClick="whichFormClicked()"> 
-		Customer	
-		<input type="radio" name="usertype" id="bookingAgentRegister" onClick="whichFormClicked()"> 
-		Booking Agent	
-		<input type="radio" name="usertype" id="airlineStaffRegister" onClick="whichFormClicked()"> 
-		Airline Staff
+		<input type="radio" name="usertype" id="customerRegister" onClick="whichFormClicked()"> Customer	
+		<input type="radio" name="usertype" id="bookingAgentRegister" onClick="whichFormClicked()"> Booking Agent	
+		<input type="radio" name="usertype" id="airlineStaffRegister" onClick="whichFormClicked()"> Airline Staff
 		<br>
-		<form class="whichForm" id="customerForm" autocomplete="off" action="{{url_for('registerAuth')}}">
-			<br><input type="text" name="email" class="registerFormText" placeholder="Email"><br>
-			<br><input type="text" name="name" class="registerFormText" placeholder="Name"><br>
-			<br><input type="password" name="password" class="registerFormText" placeholder="Password"><br>
-			<br><input type="text" name="buildingNo" class="registerFormText" placeholder="Building number"><br>
-			<br><input type="text" name="street" class="registerFormText" placeholder="Street"><br>
-			<br><input type="text" name="city" class="registerFormText" placeholder="City"><br>
-			<br><input type="text" name="state" class="registerFormText" placeholder="State"><br>
-			<br><input type="text" name="phoneNum" class="registerFormText" placeholder="Phone Number"><br>
-			<br><input type="text" name="passportNo" class="registerFormText" placeholder="Passport Number"><br>
-			<br><input type="text" name="passportExp" class="registerFormText" placeholder="Passport Expiration"><br>
-			<br><input type="text" name="passportCty" class="registerFormText" placeholder="Passport Country"><br>
-			<br><input type="text" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth"><br>
-			
+
+		<form class="whichForm" id="customerForm" autocomplete="off" action="/registerAuth/customer" method="POST">
+			<br><input type="text" name="email" class="registerFormText" placeholder="Email" required/><br>
+			<br><input type="text" name="name" class="registerFormText" placeholder="Name" required/><br>
+			<br><input type="password" name="password" class="registerFormText" placeholder="Password" required/><br>
+			<br><input type="text" name="buildingNo" class="registerFormText" placeholder="Building number" required/><br>
+			<br><input type="text" name="street" class="registerFormText" placeholder="Street" required/><br>
+			<br><input type="text" name="city" class="registerFormText" placeholder="City" required/><br>
+			<br><input type="text" name="state" class="registerFormText" placeholder="State" required/><br>
+			<br><input type="text" name="phoneNum" class="registerFormText" placeholder="Phone Number" required/><br>
+			<br><input type="text" name="passportNo" class="registerFormText" placeholder="Passport Number" required/><br>
+			<br><input type="text" name="passportExp" class="registerFormText" placeholder="Passport Expiration" required/><br>
+			<br><input type="text" name="passportCty" class="registerFormText" placeholder="Passport Country" required/><br>
+			<br><input type="text" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth" required/><br>
+			<input type="submit" value = Register id="submit"/>
 		</form>
-		<form class="whichForm" id="bookingAgentForm" autocomplete="off" action="{{url_for('registerAuth')}}">
-			<br><input type="text" name="email" class="registerFormText" placeholder="Email"><br>
-			<br><input type="password" name="password" class="registerFormText" placeholder="Password"><br>
-			<br><input type="text" name="bookingAgentId" class="registerFormText" placeholder="Booking Agent ID"><br>
+
+		<form class="whichForm" id="bookingAgentForm" autocomplete="off" action="/registerAuth/booking_agent" method="POST">
+			<br><input type="text" name="email" class="registerFormText" placeholder="Email" required/><br>
+			<br><input type="password" name="password" class="registerFormText" placeholder="Password" required/><br>
+			<br><input type="text" name="bookingAgentId" class="registerFormText" placeholder="Booking Agent ID" required/><br>
+			<input type="submit" value = Register id="submit"/>
 		</form>
-		<form class="whichForm" id="airlineStaffForm"  autocomplete="off" action="{{url_for('registerAuth')}}">
-			<br><input type="text" name="fname" class="registerFormText" placeholder="First Name"><br>
-			<br><input type="text" name="lname" class="registerFormText" placeholder="Last Name"><br>
-			<br><input type="text" name="email" class="registerFormText" placeholder="Email"><br>
-			<br><input type="password" name="password" class="registerFormText" placeholder="Password"><br>
-			<br><input type="text" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth"><br>
-			<br><input type="text" name="airline_name" class="registerFormText" placeholder="Airline Name"><br>
+
+		<form class="whichForm" id="airlineStaffForm"  autocomplete="off" action="/registerAuth/airline_staff" method="POST">
+			<br><input type="text" name="fname" class="registerFormText" placeholder="First Name" required/><br>
+			<br><input type="text" name="lname" class="registerFormText" placeholder="Last Name" required/><br>
+			<br><input type="text" name="email" class="registerFormText" placeholder="Email" required/><br>
+			<br><input type="password" name="password" class="registerFormText" placeholder="Password" required/><br>
+			<br><input type="text" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth" required/><br>
+			<br><input type="text" name="airline_name" class="registerFormText" placeholder="Airline Name" required/><br>
+			<input type="submit" value = Register id="submit"/>
 		</form>
-		<input type="submit" id="submit">
 		<br><br>
 		<a href="/"> Go Back </a>
 	</div>

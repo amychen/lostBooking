@@ -1,7 +1,3 @@
-
-var submit = document.getElementById('submit');
-
-
 function whichFormClicked(){
 	if (document.getElementById('customerRegister').checked == true){
 		document.getElementById('customerForm').style.display = "block";
@@ -23,13 +19,5 @@ function hideForm(){
 	document.getElementById('bookingAgentForm').style.display = "none";
 	document.getElementById('airlineStaffForm').style.display = "none";
 }
-
-
-submit.addEventListener('keypress', function(e) {
-	window.location.href = "/registerAuth";
-	if (e.keyCode == 13 ){
-		
-	}
-});
 
 window.onload = hideForm();

@@ -23,13 +23,13 @@ def register():
     return render_template('register.html')
 
 # Authenticates the register
-@app.route('/registerAuth/<type>', methods=['GET', 'POST'])
-def registerAuth(type):
+@app.route('/registerAuth/<userType>', methods=['GET', 'POST'])
+def registerAuth(userType):
 	username = request.form['email']
 	password = request.form['password']
 	cursor = conn.cursor()
 
-	query = 'SELECT * FROM ' + type + ' WHERE email = %s'
+	query = 'SELECT * FROM ' + userType + ' WHERE email = %s'
 	cursor.execute(query, (username))
 
 	data = cursor.fetchone()
@@ -39,26 +39,23 @@ def registerAuth(type):
 		error = "This user already exists"
 		return render_template('register.html', error = error)
 	else:
-		query = 'SELECT * FROM ' + type + ' WHERE email = %s'
-		ins = 'INSERT INTO ' + type + 'VALUES(%s, %s)'
-		cursor.execute(ins, (username, password))
-		conn.commit()
-		cursor.close()
+	 	ins = 'INSERT INTO ' + userType + '(email, password) VALUES(%s, %s)'
+	 	cursor.execute(ins, (username, password))
+	 	conn.commit()
+	 	cursor.close()
 	return render_template('login.html')
 
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():
-	#grabs information from the forms
 	username = request.form['username']
 	password = request.form['password']
 
 	cursor = conn.cursor()
-	#executes query
 	query = 'SELECT * FROM user WHERE username = %s and password = %s'
 	cursor.execute(query, (username, password))
 	data = cursor.fetchone()
 	cursor.close()
-	error = None
+	error = None	
 	if(data):
 		session['username'] = username
 		return redirect(url_for('home'))

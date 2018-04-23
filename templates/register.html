@@ -49,6 +49,9 @@
 		</form>
 		<br><br>
 		<a href="/"> Go Back </a>
+		{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+		{% endif %}
 	</div>
 	<!-- <script type="text/javascript" src="{{url_for('static',filename='/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/register.js')}}"></script> -->
 	

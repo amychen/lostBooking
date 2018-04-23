@@ -1,4 +1,4 @@
-var firstTextInput = document.getElementsByClassName('registerFormText')[0];
+
 var submit = document.getElementById('submit');
 
 
@@ -16,7 +16,6 @@ function whichFormClicked(){
 		document.getElementById('bookingAgentForm').style.display = "none";
 		document.getElementById('customerForm').style.display = "none";
 	}
-	firstTextInput.focus();
 }
 
 function hideForm(){
@@ -27,6 +26,7 @@ function hideForm(){
 
 
 submit.addEventListener('keypress', function(e) {
+	window.location.href = "/registerAuth";
 	if (e.keyCode == 13 ){
 		
 	}

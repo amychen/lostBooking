@@ -1,15 +1,14 @@
 from flask import Flask, render_template, request, session, url_for, redirect
-from flaskext.mysql import MySQL
+import pymysql.cursors
 
 app = Flask(__name__)
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'flight_ticket_system'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
-mysql = MySQL()	
-mysql.init_app(app)
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='root',
+                       port=8889,
+                       db='flight_ticket_system',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
 
 @app.route("/")
 def index():
@@ -23,29 +22,26 @@ def login():
 def register():
     return render_template('register.html')
 
-#Authenticates the register
+# Authenticates the register
 @app.route('/registerAuth', methods=['GET', 'POST'])
 def registerAuth():
-	#grabs information from the forms
-	username = request.form['username']
+	username = request.form['email']
 	password = request.form['password']
 
-	#cursor used to send queries
 	cursor = conn.cursor()
-	#executes query
-	query = 'SELECT * FROM user WHERE username = %s'
-	cursor.execute(query, (username))
-	#stores the results in a variable
+
+	query = 'SELECT * FROM user WHERE email = %s'
+	cursor.execute(query, (email))
+
 	data = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
 	error = None
+
 	if(data):
-		#If the previous query returns data, then user exists
 		error = "This user already exists"
 		return render_template('register.html', error = error)
 	else:
 		ins = 'INSERT INTO user VALUES(%s, %s)'
-		cursor.execute(ins, (username, password))
+		cursor.execute(ins, (email, password))
 		conn.commit()
 		cursor.close()
 		return render_template('login.html')
@@ -56,23 +52,17 @@ def loginAuth():
 	username = request.form['username']
 	password = request.form['password']
 
-	#cursor used to send queries
 	cursor = conn.cursor()
 	#executes query
 	query = 'SELECT * FROM user WHERE username = %s and password = %s'
 	cursor.execute(query, (username, password))
-	#stores the results in a variable
 	data = cursor.fetchone()
-	#use fetchall() if you are expecting more than 1 data row
 	cursor.close()
 	error = None
 	if(data):
-		#creates a session for the the user
-		#session is a built in
 		session['username'] = username
 		return redirect(url_for('home'))
 	else:
-		#returns an error message to the html page
 		error = 'Invalid login or username'
 		return render_template('login.html', error=error)
 

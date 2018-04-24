@@ -12,11 +12,11 @@ conn = pymysql.connect(host='localhost',
 
 @app.route("/")
 def index():
-	return render_template('index.html')
+    return render_template('index.html')
 
 @app.route("/login")
 def login():
-	return render_template('login.html')
+    return render_template('login.html')
 
 @app.route("/register")
 def register():
@@ -25,25 +25,56 @@ def register():
 # Authenticates the register
 @app.route('/registerAuth/<userType>', methods=['GET', 'POST'])
 def registerAuth(userType):
-	username = request.form['email']
-	password = request.form['password']
-	cursor = conn.cursor()
-
-	query = 'SELECT * FROM ' + userType + ' WHERE email = %s'
-	cursor.execute(query, (username))
-
-	data = cursor.fetchone()
-	error = None
-
-	if(data):
-		error = "This user already exists"
-		return render_template('register.html', error = error)
-	else:
-	 	ins = 'INSERT INTO ' + userType + ' (email, password) VALUES(%s, %s)'
-	 	cursor.execute(ins, (username, password))
-	 	conn.commit()
-	 	cursor.close()
-	return render_template('login.html')
+    username = request.form['email']
+    password = request.form['password']
+    cursor = conn.cursor()
+    
+    query = 'SELECT * FROM ' + userType + ' WHERE email = %s'
+    cursor.execute(query, (username))
+    
+    data = cursor.fetchone()
+    error = None
+    
+    if (data):
+        error = "This user already exists"
+        return render_template('register.html', error=error)
+    else:
+       if userType == "customer":
+           name = request.form['name']
+           buildingNo = request.form['buildingNo']
+           street = request.form['street']
+           city = request.form['city']
+           state = request.form['state']
+           phoneNum = request.form['phoneNum']
+           passportNo = request.form['passportNo']
+           passportExp = request.form['passportExp']
+           passportCty = request.form["passportCty"]
+           dateOfBirth = request.form['dateOfBirth']
+           ins = 'INSERT INTO customer(email, name, password, building_number, street, city, state, phone_number, \
+	 				passport_number, passport_expiration, passport_country, date_of_birth) VALUES(%s, %s, %s, %s, %s, %s, %s, \
+	 				%s, %s, %s, %s, %s)'
+           cursor.execute(ins, (email, name, password, buildingNo, street, city, state, phoneNum, passportNo, passportExp, passportCty, dateOfBirth))
+           conn.commit()
+           cursor.close()
+           return render_template('index.html')
+       elif userType == "booking_agent":
+           booking_agent_id = request.form['bookingAgentId']
+           ins = 'INSERT INTO booking_agent (email, password, booking_agent_id) VALUES(%s, %s)'
+           cursor.execute(ins, (username, password, booking_agent_id))
+           conn.commit()
+           cursor.close()
+           return render_template('index.html')
+       else:
+           fname = request.form['fname']
+           lname = request.form['lname']
+           dateOfBirth = request.form['dateOfBirth']
+           airline_name = request.form['airline_name']
+           ins = 'INSERT INTO airline_staff(email, password, first_name, last_name, date_of_birth, airline_name) \
+           	    VALUES(%s, %s, %s, %s, %s, %s)'
+           cursor.execute(ins, (email, password, fname, lname, dateOfBirth, airline_name))
+           conn.commit()
+           cursor.close()
+           return render_template('index.html')
 
 @app.route('/loginAuth', methods=['GET', 'POST'])
 def loginAuth():

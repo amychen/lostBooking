@@ -57,17 +57,46 @@ def loginAuth():
 	else:
 		query = 'SELECT * FROM ' + userType + ' WHERE email = %s and password = %s'
 
-
 	cursor.execute(query, (username, password))
 	data = cursor.fetchone()
 	cursor.close()
-	error = None	
-	if(data):
-		session['username'] = username
-		return render_template('index.html', error=error)
-	else:
+	error = None
+	if (data == False):
 		error = 'Invalid login. Did you register?'
 		return render_template('login.html', error=error)
+	else: 
+		if (userType == "airline_staff"):
+			session['username'] = username
+		else:
+			session['email'] = username
+		return redirect(url_for('home'))
+			
+
+
+@app.route('/home')
+def home():
+	if (session['email'] != ""):
+		username = session['username']
+		print(username + "\n");
+		return render_template('staff.html')
+	else:
+		username = session['email']
+		cursor = conn.cursor()
+		query = 'SELECT * FROM customer WHERE username = %s'
+		cursor.execute(query, username)
+		data = cursor.fetchone()
+		cursor.close()
+		if (data):
+			return render_template('customer.html')
+		else:
+			return render_template('agent.html')
+
+@app.route('/logout')
+def logout():
+	session.pop('username')
+	return redirect('/')
+
+app.secret_key = 'b\'e3r\xd7\xf4\xc7g\xd7N\xf5\xefV\xb9\xdf\xed\xf2P%~\t\x8f.X\x91'
 
 if __name__ == "__main__":
 	app.run('127.0.0.1', 5000, debug = True)

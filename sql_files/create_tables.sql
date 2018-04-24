@@ -28,7 +28,7 @@ CREATE TABLE `airline_staff` (
 
 CREATE TABLE `airplane` (
   `airline_name` varchar(50) NOT NULL,
-  `airplane_id` varchar(50) NOT NULL,
+  `airplane_id` varchar(11) NOT NULL,
   `seats` int(11) NOT NULL,
   PRIMARY KEY(`airline_name`, `airplane_id`),
   FOREIGN KEY(`airline_name`) REFERENCES `airline`(`airline_name`)
@@ -96,7 +96,7 @@ CREATE TABLE `flight` (
   `arrival_time` datetime NOT NULL,
   `price` decimal(10,0) NOT NULL,
   `status` varchar(50) NOT NULL,
-  `airplane_id` varchar(50) NOT NULL,
+  `airplane_id` varchar(11) NOT NULL,
   PRIMARY KEY(`airline_name`, `flight_num`),
   FOREIGN KEY(`airline_name`, `airplane_id`) REFERENCES `airplane`(`airline_name`, `airplane_id`),
   FOREIGN KEY(`departure_airport`) REFERENCES `airport`(`airport_name`),

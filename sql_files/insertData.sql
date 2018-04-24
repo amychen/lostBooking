@@ -43,10 +43,10 @@ insert into airport values ('BKK', 'Bang Phli');
 
 
 -- c
-insert into customer values ('abc@gmail.com', 'Ava Chen', 'applePie', 100, 'Grand Street', 'New York', 'New York', 
-							 '917-333-3333', '998877665', '2017-03-27', 'USA', '2000-10-29');
-insert into customer values ('123@gmail.com', 'Andy Chen', 'hotPotato', 911, 'Bleeke Street', 'New York', 'New York', 
-							 '646-283-8618', '112233445', '2017-03-28', 'USA', '1999-03-15');
+insert into customer values ('abc@gmail.com', 'Ava Chen', 'applePie', "100", 'Grand Street', 'New York', 'New York', 
+							 9173333333, '998877665', '2017-03-27', 'USA', '2000-10-29');
+insert into customer values ('123@gmail.com', 'Andy Chen', 'hotPotato', "911", 'Bleeke Street', 'New York', 'New York', 
+							 6462838618, '112233445', '2017-03-28', 'USA', '1999-03-15');
 -- d
 insert into airplane values ('Delta', 'Boeing 737', 200);
 insert into airplane values ('Malaysia Airlines', 'Boeing 757', 430);
@@ -78,8 +78,8 @@ insert into ticket values (12345, 'Delta', 267);
 insert into ticket values (54321, 'China Eastern', 587);
 insert into ticket values (32154, 'United Airlines', 297);
 
-insert into booking_agent values ('myemail@mu.com', 'password', 123456321);
-insert into booking_agent values ('dummy@gmail.com', 'dummy', 999999999);
+insert into booking_agent values ('myemail@mu.com', 'password', 123456);
+insert into booking_agent values ('dummy@gmail.com', 'dummy', 99999999999);
 
-insert into purchases values (12345, '123@gmail.com', 123456321, '2018-07-07');
-insert into purchases values (54321, 'abc@gmail.com', 999999999, '2018-08-19');
+insert into purchases values (12345, '123@gmail.com', 123456, '2018-07-07');
+insert into purchases values (54321, 'abc@gmail.com', 99999999999, '2018-08-19');

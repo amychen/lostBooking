@@ -39,7 +39,7 @@ def registerAuth(userType):
 		error = "This user already exists"
 		return render_template('register.html', error = error)
 	else:
-	 	ins = 'INSERT INTO ' + userType + '(email, password) VALUES(%s, %s)'
+	 	ins = 'INSERT INTO ' + userType + ' (email, password) VALUES(%s, %s)'
 	 	cursor.execute(ins, (username, password))
 	 	conn.commit()
 	 	cursor.close()
@@ -49,18 +49,24 @@ def registerAuth(userType):
 def loginAuth():
 	username = request.form['username']
 	password = request.form['password']
+	userType = request.form['usertype']
 
 	cursor = conn.cursor()
-	query = 'SELECT * FROM user WHERE username = %s and password = %s'
+	if (userType == "airline_staff"):
+		query = 'SELECT * FROM  airline_staff WHERE username = %s and password = %s'
+	else:
+		query = 'SELECT * FROM ' + userType + ' WHERE email = %s and password = %s'
+
+
 	cursor.execute(query, (username, password))
 	data = cursor.fetchone()
 	cursor.close()
 	error = None	
 	if(data):
 		session['username'] = username
-		return redirect(url_for('home'))
+		return render_template('index.html', error=error)
 	else:
-		error = 'Invalid login or username'
+		error = 'Invalid login. Did you register?'
 		return render_template('login.html', error=error)
 
 if __name__ == "__main__":

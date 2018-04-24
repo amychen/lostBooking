@@ -10,13 +10,21 @@
 	<div id="login_div">
 		<form action="/loginAuth" id="name_pw" method="POST">
 			<h2>Login</h2>
-			<br>
+			<input type="radio" name="user" id="customerRegister" onClick="whichFormClicked()" required/> Customer	
+			<input type="radio" name="user" id="bookingAgentRegister" onClick="whichFormClicked()" required/> Booking Agent	
+			<input type="radio" name="user" id="airlineStaffRegister" onClick="whichFormClicked()" required/> Airline Staff
+			<input type="hidden" name="usertype" value="" id="usertype">
+			<br><br>
 			<h3>Email</h3>
-			<br><input type=text name="username" id="email" autocomplete="off"><br><br>
+			<br><input type=text name="username" id="email" autocomplete="off" required/><br><br>
 			<h3>Password</h3>
-			<br><input type=password name="password" id="password" autocomplete="off"><br><br>
+			<br><input type=password name="password" id="password" autocomplete="off" required/><br><br>
 			<input type="submit" id="submit"><br><br><br>
 			<a href="/"> Go Back </a>
+			
+			{% if error %}
+			<p class="error"><strong>Error:</strong> {{error}}</p>
+			{% endif %}
 		</form>
 	</div>
 	<!-- <script type="text/javascript" src="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/login.js"></script> -->

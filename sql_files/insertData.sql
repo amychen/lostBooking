@@ -78,8 +78,8 @@ insert into ticket values (12345, 'Delta', 267);
 insert into ticket values (54321, 'China Eastern', 587);
 insert into ticket values (32154, 'United Airlines', 297);
 
-insert into booking_agent values ('myemail@mu.com', 'password', 123456321432);
-insert into booking_agent values ('dummy@gmail.com', 'dummy', 999999999999);
+insert into booking_agent values ('myemail@mu.com', 'password', 123456321);
+insert into booking_agent values ('dummy@gmail.com', 'dummy', 999999999);
 
-insert into purchases values (12345, '123@gmail.com', 123456321432, '2018-07-07');
-insert into purchases values (54321, 'abc@gmail.com', 999999999999, '2018-08-19');
+insert into purchases values (12345, '123@gmail.com', 123456321, '2018-07-07');
+insert into purchases values (54321, 'abc@gmail.com', 999999999, '2018-08-19');

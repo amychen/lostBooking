@@ -16,34 +16,34 @@
 		<br>
 
 		<form class="whichForm" id="customerForm" autocomplete="off" action="/registerAuth/customer" method="POST">
-			<br><input type="text" name="email" class="registerFormText" placeholder="Email" required/><br>
+			<br><input type="email" name="email" class="registerFormText" placeholder="Email" required/><br>
 			<br><input type="text" name="name" class="registerFormText" placeholder="Name" required/><br>
 			<br><input type="password" name="password" class="registerFormText" placeholder="Password" required/><br>
 			<br><input type="text" name="buildingNo" class="registerFormText" placeholder="Building number" required/><br>
 			<br><input type="text" name="street" class="registerFormText" placeholder="Street" required/><br>
 			<br><input type="text" name="city" class="registerFormText" placeholder="City" required/><br>
 			<br><input type="text" name="state" class="registerFormText" placeholder="State" required/><br>
-			<br><input type="text" name="phoneNum" class="registerFormText" placeholder="Phone Number" required/><br>
+			<br><input type="number" name="phoneNum" class="registerFormText" placeholder="Phone Number" required/><br>
 			<br><input type="text" name="passportNo" class="registerFormText" placeholder="Passport Number" required/><br>
-			<br><input type="text" name="passportExp" class="registerFormText" placeholder="Passport Expiration" required/><br>
+			<br><input type="date" name="passportExp" class="registerFormText" placeholder="Passport Expiration" required/><br>
 			<br><input type="text" name="passportCty" class="registerFormText" placeholder="Passport Country" required/><br>
-			<br><input type="text" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth" required/><br>
+			<br><input type="date" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth" required/><br>
 			<input type="submit" value = Register id="submit"/>
 		</form>
 
 		<form class="whichForm" id="bookingAgentForm" autocomplete="off" action="/registerAuth/booking_agent" method="POST">
-			<br><input type="text" name="email" class="registerFormText" placeholder="Email" required/><br>
+			<br><input type="email" name="email" class="registerFormText" placeholder="Email" required/><br>
 			<br><input type="password" name="password" class="registerFormText" placeholder="Password" required/><br>
-			<br><input type="text" name="bookingAgentId" class="registerFormText" placeholder="Booking Agent ID" required/><br>
+			<br><input type="number" name="bookingAgentId" class="registerFormText" placeholder="Booking Agent ID" required/><br>
 			<input type="submit" value = Register id="submit"/>
 		</form>
 
 		<form class="whichForm" id="airlineStaffForm"  autocomplete="off" action="/registerAuth/airline_staff" method="POST">
-			<br><input type="text" name="email" class="registerFormText" placeholder="Email" required/><br>
+			<br><input type="email" name="email" class="registerFormText" placeholder="Email" required/><br>
 			<br><input type="password" name="password" class="registerFormText" placeholder="Password" required/><br>
 			<br><input type="text" name="fname" class="registerFormText" placeholder="First Name" required/><br>
 			<br><input type="text" name="lname" class="registerFormText" placeholder="Last Name" required/><br>
-			<br><input type="text" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth" required/><br>
+			<br><input type="date" name="dateOfBirth" class="registerFormText" placeholder="Date of Birth" required/><br>
 			<br><input type="text" name="airline_name" class="registerFormText" placeholder="Airline Name" required/><br>
 			<input type="submit" value = Register id="submit"/>
 		</form>

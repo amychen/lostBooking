@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Lost Bookings</title>
+	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/airline_staff.css')}}">
+</head>
+<body>
+	<a href="/logout" id="logout">Logout</a>
+
+	{% if username %}
+		<p class="name"><strong>Welcome {{username}}</strong></p>
+	{% endif %}
+
+	<h2><a href="/viewFlights">View flights</a></h2>
+	<h2><a href="/createFlight">Create flights</a></h2>
+	<h2><a href="/changeStatus">Change status of flights</a></h2>
+	<h2><a href="/addPlane">Add airplane to the system</a></h2>
+	<h2><a href="/addAirport">Add new airport</a></h2>
+	<h2><a href="/viewAgent">View all booking agent</a></h2>
+	<h2><a href="/viewCustomer">View frequent customer</a></h2>
+	<h2><a href="/viewReport">View reports</a></h2>
+	<h2><a href="/revenueComparison">Comparison of revenue earned</a></h2>
+	<h2><a href="/topDestination">View top destination</a></h2>
+
+	<script type="text/javascript" src="{{url_for('static',filename='js/airline_staff.js')}}"></script>
+</body>
+</html>

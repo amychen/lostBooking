@@ -3,7 +3,7 @@
 <head>
 	<title>Lost Bookings</title>
 	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/customer.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/booking_agent.css')}}">
 </head>
 <body>
 	<a href="/logout" id="logout">Logout</a>
@@ -11,15 +11,17 @@
 	{% if username %}
 		<p class="name"><strong>Welcome {{username}} </strong> </p>
 	{% endif %}
- 
+
 	<h2><a href="/viewFlights">View my flights</a></h2>
 
 	<h2><a href="/purchase">Purchase tickets</a></h2>
 
 	<h2><a href="/search">Search for flights</a></h2>
 
-	<h2><a href="/track">Track my spending</a></h2>
+	<h2><a href="/commission">View commission</a></h2>
 
-	<script type="text/javascript" src="{{url_for('static',filename='js/customer.js')}}"></script>
+	<h2><a href="/topCustomer">View top customer</a></h2>
+
+	<script type="text/javascript" src="{{url_for('static',filename='js/booking_agent.js')}}"></script>
 </body>
 </html>

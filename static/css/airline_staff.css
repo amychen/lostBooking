@@ -1,0 +1,15 @@
+* {
+	font-family: 'Noto Serif', serif;
+	color: #565656;
+}
+
+#logout{
+	float:right;
+	display:block;
+	text-decoration:none;
+	padding-right: 10px;
+}
+
+h2{
+	clear:both;
+}

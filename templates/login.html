@@ -3,7 +3,6 @@
 <head>
 	<title>Lost Bookings</title>
 	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
-	<!-- <link rel="stylesheet" type="text/css" href="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/css/login.css"> -->
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/login.css')}}">
 </head>
 <body>
@@ -21,13 +20,11 @@
 			<br><input type=password name="password" id="password" autocomplete="off" required/><br><br>
 			<input type="submit" id="submit"><br><br><br>
 			<a href="/"> Go Back </a>
-			
 			{% if error %}
 			<p class="error"><strong>Error:</strong> {{error}}</p>
 			{% endif %}
 		</form>
 	</div>
-	<!-- <script type="text/javascript" src="/Users/amychen/Desktop/sophomore/databases/prj/Lost/static/js/login.js"></script> -->
 	<script type="text/javascript" src="{{url_for('static',filename='js/login.js')}}"></script>
 </body>
 </html>

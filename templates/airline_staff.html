@@ -9,20 +9,110 @@
 	<a href="/logout" id="logout">Logout</a>
 
 	{% if username %}
-		<p class="name"><strong>Welcome {{username}}</strong></p>
+		<p class="name" id="welcome"><strong>Welcome {{username}} </strong> </p>
+	{% endif %}
+	{% if message %}
+		<p class="message">{{message}}</p>
 	{% endif %}
 
-	<h2><a href="/viewFlights">View flights</a></h2>
-	<h2><a href="/createFlight">Create flights</a></h2>
-	<h2><a href="/changeStatus">Change status of flights</a></h2>
-	<h2><a href="/addPlane">Add airplane to the system</a></h2>
-	<h2><a href="/addAirport">Add new airport</a></h2>
-	<h2><a href="/viewAgent">View all booking agent</a></h2>
+	<h2><a href="/viewFlights#"">Views flights or change status</a></h2>
+	<div id="viewFlights">
+		<div id="statusBox" class="modal">
+			<div class="modal-content">
+	    		<span id="close">&times;</span>
+	    		<div id="header"></div>
+	    		<div id="selectStatus">
+	    			<select id="selectOption">
+	    				<option>Upcoming</option><option>In Progress</option>
+	    				<option>Delayed</option><option>Arrived</option>
+	    			</select>
+	    		</div>
+  			</div>
+  			<form action="/updateStatus" method="POST">
+  				<input type="hidden" name="airline_name" id="a_name"/>
+  				<input type="hidden" name="flight_num" id="f_num"/>
+  				<input type="hidden" name="newStatus" id="newStatus"/>
+  				<input type="submit" id="updateBtn" name="update"/>
+  			</form>
+		</div>
+
+		<table id="flights">
+			<tr>
+				<th>Airline Name</th>
+				<th>Flight Number</th>
+				<th>Departure Airport</th>
+				<th>Departure Time</th>
+				<th>Arrival Airport</th>
+				<th>Arrival Time</th>
+				<th>Price</th>
+				<th>Status</th>
+				<th>Airplane ID</th>
+			</tr>
+			{% for flight in flights %}
+			<tr>
+				<td id="airline_name" class="airline_name">{{flight.airline_name}}</td>
+				<td id="flight_num" class="flight_num">{{flight.flight_num}}</td>
+				<td>{{flight.departure_airport}}</td>
+				<td>{{flight.departure_time}}</td>
+				<td>{{flight.arrival_airport}}</td>
+				<td>{{flight.arrival_time}}</td>
+				<td>{{flight.price}}</td>
+				<td id="flight_status" class="flight_status">{{flight.status}}<br><input type="submit" class="changeStatusButton" value="Change Status" onClick="changeStatus(this)"></td>
+				<td>{{flight.airplane_id}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+	<h2><a href="#" onClick="showFlightForm()">Create flights</a></h2>
+	<form action="/createFlight" method="POST" id="addNewFlight">
+		<input type="text" placeholder="Airline Name" name="airline_name" required/>
+		<input type="number" placeholder="Flight Number" name="flight_num" required/>
+		<input type="text" placeholder="Departure Airport" name="dpt_airport" required/>
+		<input type="datetime-local" placeholder="Departure Time" name="dpt_time" required/>
+		<input type="text" placeholder="Arrival Airport" name="arr_airport" required/>
+		<input type="datetime-local" placeholder="Arrival Time" name="arr_time" required/>
+		<input type="number" placeholder="Price" name="price" required/>
+		<input type="text" placeholder="Status" name="status" required/>
+		<input type="text" placeholder="Airplane ID" name="plane_id" required/>
+		<input type="submit" value="Add">
+	</form>
+
+	<h2><a href="#" onClick="showPlaneForm()">Add airplane to the system</a></h2>
+	<form action="/addPlane" id="add_plane_form" method="POST" style="display:none">
+		<input type="text" name="airline_name" placeholder="Airline Name" required/>
+		<input type="text" name="airplane_id" placeholder="Airplane ID" required/>
+		<input type="number" name="seats" placeholder="Number of Seats" required/>
+		<input type="submit" value="Add">
+	</form>
+
+	<h2><a href="#" onClick="showAirportForm()">Add new airport</a></h2>
+	<form action="/addAirport" id="airport_form" method="POST" style="display:none">
+		<input type="text" name="airport_name" placeholder="Airport Name" required/>
+		<input type="text" name="airport_city" placeholder="Airport City" required/>
+		<input type="submit" value="Add">
+	</form>
+
+	<h2><a href="/viewAgent#" onClick="showAgent()">View all booking agent</a></h2>
+	<div id="viewAgents" style="display:none; margin: 0 auto; margin-left: 20%">
+		<table>
+			<tr>
+				<th style="width:50%; padding:0px 100px">Email</th>
+				<th style="width:50%; padding:0px 100px">Booking Agent Id</th>
+			</tr>
+			{% for agent in agents %}
+			<tr>
+				<td id="airline_name">{{agent.email}}</td>
+				<td id="flight_num">{{agent.booking_agent_id}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+
 	<h2><a href="/viewCustomer">View frequent customer</a></h2>
 	<h2><a href="/viewReport">View reports</a></h2>
 	<h2><a href="/revenueComparison">Comparison of revenue earned</a></h2>
 	<h2><a href="/topDestination">View top destination</a></h2>
-
 	<script type="text/javascript" src="{{url_for('static',filename='js/airline_staff.js')}}"></script>
 </body>
 </html>

@@ -2,7 +2,6 @@
 	font-family: 'Noto Serif', serif;
 	color: #565656;
 	box-sizing: border-box;
-	overflow: hidden;
 }	
 
 body{
@@ -23,7 +22,7 @@ a {
 	margin-bottom: 100px;
 }
 
-#headerName {
+#headerName {     
 	clear: both;
 	margin-left: 21px;
 	color: #FEE8D9;

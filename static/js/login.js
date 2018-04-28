@@ -5,7 +5,6 @@ var userType;
 function whichFormClicked(){
 	if (document.getElementById('customerRegister').checked == true)
 	{
-		console.log("hi");
 		userType = "customer";
 	} 
 	else if (document.getElementById('bookingAgentRegister').checked == true) 

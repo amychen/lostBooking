@@ -69,9 +69,9 @@ insert into airplane values ('Air New Zealand', 'McDonnell Douglas DC-9', 350);
 insert into airline_staff values ('amychen', 'abcd1234!', 'Amy', 'Chen', '1998-03-19', 'China Eastern');
 
 -- f 
-insert into flight values ('Delta', 267, 'JFK', 090920, 'SFO', 171008, 314.89, 'UPCOMING', 'Boeing 737');
-insert into flight values ('China Eastern', 587, 'PVG', 091059, 'JFK', 233050, 580.33, 'DELAYED', 'Airbus A320');
-insert into flight values ('United Airlines', 297, 'PVG', 213005, 'JFK', 103070, 857.79, 'IN-PROGRESS', 'Airbus A380');
+insert into flight values ('Delta', 267, 'JFK', '2018-03-14 09:09:20', 'SFO', '2018-03-15 17:10:08', 314.89, 'UPCOMING', 'Boeing 737');
+insert into flight values ('China Eastern', 587, 'PVG', '2018-06-01 09:10:59', 'JFK', '2018-06-1 23:30:50', 580.33, 'DELAYED', 'Airbus A320');
+insert into flight values ('United Airlines', 297, 'PVG', '2018-05-10 00:01:59', 'JFK', '2018-05-11 04:22:05', 857.79, 'IN-PROGRESS', 'Airbus A380');
 
 -- g
 insert into ticket values (12345, 'Delta', 267);

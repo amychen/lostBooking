@@ -49,6 +49,10 @@ input[type=submit] {
     margin-top: 30px;
 }
 
+input[type=date]{
+	-webkit-align-items: center;
+}
+
 p {
 	color: red;
 }

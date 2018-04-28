@@ -1,4 +1,4 @@
-*{
+* {
 	font-family: 'Noto Serif', serif;
 	color: #565656;
 }
@@ -12,4 +12,8 @@
 
 h2{
 	clear:both;
+}
+
+a{
+	text-decoration: none;
 }

@@ -6,16 +6,16 @@
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/airline_staff.css')}}">
 </head>
 <body>
-	<a href="/logout" id="logout">Logout</a>
+	<a href="/logout" id="logout">Logout</a><br>
 
 	{% if username %}
-		<p class="name" id="welcome"><strong>Welcome {{username}} </strong> </p>
+		<p class="name">Hello <strong>{{username}} </strong> </p>
+		<p class="name">Your airline is <strong>{{airline}} </strong> </p>
 	{% endif %}
 	{% if message %}
-		<p class="message">{{message}}</p>
+		<p class="message" style="color:red">{{message}}</p>
 	{% endif %}
 
-	<h2><a href="/viewFlights#"">Views flights or change status</a></h2>
 	<div id="viewFlights">
 		<div id="statusBox" class="modal">
 			<div class="modal-content">
@@ -35,7 +35,13 @@
   				<input type="submit" id="updateBtn" name="update"/>
   			</form>
 		</div>
-
+		<form action="/search_flights" method="POST" id="searchOwnFlight">
+			<input type="datetime-local" name="start_date" required/>
+			<input type="datetime-local" name="end_date" required/>
+			<input type="search" name="dpt_airport" placeholder="Departure Airport" required/>
+			<input type="search" name="arr_airport" placeholder="Arrival Airport" required/>
+			<input type="submit" value="Search" required/>
+		</form>
 		<table id="flights">
 			<tr>
 				<th>Airline Name</th>
@@ -64,37 +70,39 @@
 		</table>
 	</div>
 
-	<h2><a href="#" onClick="showFlightForm()">Create flights</a></h2>
-	<form action="/createFlight" method="POST" id="addNewFlight">
-		<input type="text" placeholder="Airline Name" name="airline_name" required/>
-		<input type="number" placeholder="Flight Number" name="flight_num" required/>
-		<input type="text" placeholder="Departure Airport" name="dpt_airport" required/>
-		<input type="datetime-local" placeholder="Departure Time" name="dpt_time" required/>
-		<input type="text" placeholder="Arrival Airport" name="arr_airport" required/>
-		<input type="datetime-local" placeholder="Arrival Time" name="arr_time" required/>
-		<input type="number" placeholder="Price" name="price" required/>
-		<input type="text" placeholder="Status" name="status" required/>
-		<input type="text" placeholder="Airplane ID" name="plane_id" required/>
-		<input type="submit" value="Add">
-	</form>
+	<h2>Create flights</h2>
+	<div>
+		<form action="/createFlight" method="POST" id="addNewFlight" autocomplete="off">
+			<input type="text" placeholder="Airline Name" name="airline_name" required/><br>
+			<input type="number" placeholder="Flight Number" name="flight_num" required/><br>
+			<input type="text" placeholder="Departure Airport" name="dpt_airport" required/><br>
+			<input type="datetime-local" placeholder="Departure Time" name="dpt_time" required/><br>
+			<input type="text" placeholder="Arrival Airport" name="arr_airport" required/><br>
+			<input type="datetime-local" placeholder="Arrival Time" name="arr_time" required/><br>
+			<input type="number" placeholder="Price" name="price" required/><br>
+			<input type="text" placeholder="Status" name="status" required/><br>
+			<input type="text" placeholder="Airplane ID" name="plane_id" required/><br>
+			<input type="submit" value="Add">
+		</form>
+	</div>
 
-	<h2><a href="#" onClick="showPlaneForm()">Add airplane to the system</a></h2>
-	<form action="/addPlane" id="add_plane_form" method="POST" style="display:none">
+	<h2>Add airplane to the system</h2>
+	<form action="/addPlane" id="add_plane_form" method="POST" autocomplete="off">
 		<input type="text" name="airline_name" placeholder="Airline Name" required/>
 		<input type="text" name="airplane_id" placeholder="Airplane ID" required/>
 		<input type="number" name="seats" placeholder="Number of Seats" required/>
 		<input type="submit" value="Add">
 	</form>
 
-	<h2><a href="#" onClick="showAirportForm()">Add new airport</a></h2>
-	<form action="/addAirport" id="airport_form" method="POST" style="display:none">
+	<h2>Add new airport</h2>
+	<form action="/addAirport" id="airport_form" method="POST" autocomplete="off">
 		<input type="text" name="airport_name" placeholder="Airport Name" required/>
 		<input type="text" name="airport_city" placeholder="Airport City" required/>
 		<input type="submit" value="Add">
 	</form>
 
-	<h2><a href="/viewAgent#" onClick="showAgent()">View all booking agent</a></h2>
-	<div id="viewAgents" style="display:none; margin: 0 auto; margin-left: 20%">
+	<h2>View all booking agent</h2>
+	<div id="viewAgents" style="margin: 0 auto; margin-left: 20%">
 		<table>
 			<tr>
 				<th style="width:50%; padding:0px 100px">Email</th>

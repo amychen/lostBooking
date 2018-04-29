@@ -1,24 +1,5 @@
-function showAirportForm() {
-    var newAirport = document.getElementById("airport_form");
-    if (newAirport.style.display === "none") {
-        newAirport.style.display = "block";
-    } else {
-        newAirport.style.display = "none";
-    }
-}
-
-function showPlaneForm(){
-	var newAirplane = document.getElementById("add_plane_form");
-    if (newAirplane.style.display === "none"){
-        newAirplane.style.display = "block";
-    } else {
-        newAirplane.style.display = "none";
-    }
-}
-
 var num_of_rows = document.getElementById("flights").rows.length;
 for (var i = 0; i < num_of_rows - 1; i++){
-
     var airline_name = document.getElementsByClassName("airline_name")[i].innerHTML;
     var flight_num = document.getElementsByClassName("flight_num")[i].innerHTML;
     var statusButton = document.getElementsByClassName("changeStatusButton")[i];
@@ -55,16 +36,6 @@ function changeStatus(e){
         f_num.value = name_num_stat[1];
     })
 }
-
-function showAgent(){
-    var agents = document.getElementById("viewAgents");
-    if (agents.style.display === "none"){
-        agents.style.display = "block";
-    } else {
-        agents.style.display = "none";
-    }
-}
-
 // function showFlightForm(){
 //     var newFlight = document.getElementById("add_flight_form");
 //     if (newFlight.style.display === "none"){

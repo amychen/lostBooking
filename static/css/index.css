@@ -1,4 +1,4 @@
-*{
+* {
 	font-family: 'Noto Serif', serif;
 	color: #565656;
 	box-sizing: border-box;
@@ -19,7 +19,7 @@ a {
 #topbar {
 	float:right;
 	margin-top: 20px;
-	margin-bottom: 100px;
+	margin-bottom: 20px;
 }
 
 #headerName {     

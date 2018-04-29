@@ -9,7 +9,7 @@
 	<a href="/logout" id="logout">Logout</a>
 
 	{% if username %}
-		<p class="name"><strong>Welcome {{username}} </strong> </p>
+		<p class="name">Hello <strong>{{username}}</strong></p>
 	{% endif %}
  
 	<h2><a href="/viewFlights">View my flights</a></h2>
@@ -19,7 +19,7 @@
 	<h2><a href="/search">Search for flights</a></h2>
 
 	<h2><a href="/track">Track my spending</a></h2>
-
+	
 	<script type="text/javascript" src="{{url_for('static',filename='js/customer.js')}}"></script>
 </body>
 </html>

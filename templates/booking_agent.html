@@ -9,7 +9,8 @@
 	<a href="/logout" id="logout">Logout</a>
 
 	{% if username %}
-		<p class="name"><strong>Welcome {{username}} </strong> </p>
+		<p class="name">Hello <strong> {{username}} </strong></p>
+		<p class="name">Your booking agent ID is <strong>{{idnum}}</strong> </p>
 	{% endif %}
 
 	<h2><a href="/viewMyFlights">View my flights</a></h2>

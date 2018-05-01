@@ -4,6 +4,12 @@
 	<title>Lost Bookings</title>
 	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/airline_staff.css')}}">
+	<link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" rel="stylesheet">
+    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css" rel="stylesheet">
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.5.min.js"></script>
+    {{ script|safe }}
+    {{ script1|safe }}
 </head>
 <body>
 	<a href="/logout" id="logout">Logout</a><br>
@@ -36,8 +42,8 @@
   			</form>
 		</div>
 		<form action="/search_flights" method="POST" id="searchOwnFlight">
-			<input type="datetime-local" name="start_date" required/>
-			<input type="datetime-local" name="end_date" required/>
+			<input type="date" name="start_date" required/>
+			<input type="date" name="end_date" required/>
 			<input type="search" name="dpt_airport" placeholder="Departure Airport" required/>
 			<input type="search" name="arr_airport" placeholder="Arrival Airport" required/>
 			<input type="submit" value="Search" required/>
@@ -101,26 +107,107 @@
 		<input type="submit" value="Add">
 	</form>
 
-	<h2>View all booking agent</h2>
-	<div id="viewAgents" style="margin: 0 auto; margin-left: 20%">
+	<h2>Booking agent</h2>
+	<div style="text-align: center">Top 5 From Last Three Months (By Tickets)</div>
+	<div id="viewAgents" style="margin: 0 auto">
 		<table>
 			<tr>
-				<th style="width:50%; padding:0px 100px">Email</th>
-				<th style="width:50%; padding:0px 100px">Booking Agent Id</th>
+				<th>Email</th>
+				<th>Booking Agent Id</th>
+				<th>Tickets</th>
 			</tr>
-			{% for agent in agents %}
+			{% for agent in three_month_agents %}
 			<tr>
-				<td id="airline_name">{{agent.email}}</td>
-				<td id="flight_num">{{agent.booking_agent_id}}</td>
+				<td>{{agent.email}}</td>
+				<td>{{agent.booking_agent_id}}</td>
+				<td>{{agent.cnt}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div style="text-align: center">Top 5 From Last Year (By Tickets)</div>
+	<div id="viewAgents" style="margin: 0 auto">
+		<table>
+			<tr>
+				<th>Email</th>
+				<th>Booking Agent Id</th>
+				<th>Tickets</th>
+			</tr>
+			{% for agent in past_year_agents %}
+			<tr>
+				<td>{{agent.email}}</td>
+				<td>{{agent.booking_agent_id}}</td>
+				<td>{{agent.cnt}}</td>
 			</tr>
 			{% endfor %}
 		</table>
 	</div>
 
-	<h2><a href="/viewCustomer">View frequent customer</a></h2>
-	<h2><a href="/viewReport">View reports</a></h2>
-	<h2><a href="/revenueComparison">Comparison of revenue earned</a></h2>
-	<h2><a href="/topDestination">View top destination</a></h2>
+	<div style="text-align: center">Top 5 From Last Year (By Commission)</div>
+	<div id="viewAgents" style="margin: 0 auto;">
+		<table>
+			<tr>
+				<th>Email</th>
+				<th>Booking Agent Id</th>
+				<th>Commission</th>
+			</tr>
+			{% for agent in commission_past_year_agent%}
+			<tr>
+				<td>{{agent.email}}</td>
+				<td>{{agent.booking_agent_id}}</td>
+				<td>{{agent.commission}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+	
+	<h2>Frequent customer</h2>
+		<h4>Your most frequent customer last year is <span>{{top_customer}}</span> with a grand total of <span>{{purchase_ticket}}</span> ticket(s)</h4>
+	<h2>Reports</h2>
+	<div>
+		<form action="/filterFlightRevenue" method="POST" autocomplete="off">
+			Start Date <input type="date" name="report_start_date" required/> End Date <input type="date" name="report_end_date" required/>
+			<input type="submit" value="Search"><br>
+			<span>Customers spent {{cust_revenue_year}}. Booking Agents spent {{agent_revenue_year}}.</span>
+		</form>
+	</div>
+	<div id="cust_agent_summary"></div>
+	<span> A total number of {{total}} tickets were sold </span>
+	<div id="piechart">{{ div|safe }}</div>
+	<div>{{div1| safe}}</div>
+	<div id="bargraph">{{ div2|safe }}</div>
+	<h2>Top Destination In Last Three Month</h2>
+	<div id="viewDestination" style="margin: 0 auto">
+		<table>
+			<tr>
+				<th>Destination</th>
+				<th>Visitors</th>
+			</tr>
+			{% for destination in top_destination_month %}
+			<tr>
+				<td>{{destination.airport_city}}</td>
+				<td>{{destination.cnt}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<h2>Top Destination In Last Year</h2>
+	<div id="viewDestination" style="margin: 0 auto">
+		<table>
+			<tr>
+				<th>Destination</th>
+				<th>Visitors</th>
+			</tr>
+			{% for destination in top_destination_year %}
+			<tr>
+				<td>{{destination.airport_city}}</td>
+				<td>{{destination.cnt}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	
 	<script type="text/javascript" src="{{url_for('static',filename='js/airline_staff.js')}}"></script>
 </body>
 </html>

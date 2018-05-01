@@ -1,6 +1,7 @@
 * {
 	font-family: 'Noto Serif', serif;
 	color: #565656;
+	overflow-x: hidden
 }
 
 h2 {
@@ -36,11 +37,11 @@ span {
 	color: #aa8a8a;
 }
 
-form {
+form, h4 {
 	text-align: center;
 }
 
-#viewFlights, #viewAgents {
+#viewFlights, #viewAgents, #viewDestination {
 	margin: 0 auto; 
 	width: 90%;
 	padding: 0px;
@@ -115,4 +116,23 @@ form {
 #flights {
 	padding-top: : 100px;
 }
+
+#piechart {
+	clear: both;
+	float: left;
+	padding-left: 50px
+}
+
+#bargraph {
+	padding-top: 50px;
+	float: right;
+	margin: 0px;
+	padding: 0px;
+}
+
+#cust_agent_summary {
+	color: #aa8a8a;
+	margin-left: 70px;
+}
+
 

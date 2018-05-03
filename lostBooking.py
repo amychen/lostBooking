@@ -34,7 +34,9 @@ def search():
 @app.route("/")
 def index():
 	try:
+
 		username = session['username']
+
 		user = session['type']
 		curr_date = date.today()
 		one_month = date.today() + relativedelta(months=+1)
@@ -50,24 +52,28 @@ def index():
 
 				cursor.execute('SELECT * FROM flight WHERE departure_time BETWEEN %s AND %s AND airline_name = %s \
 									AND departure_airport=%s AND arrival_airport=%s', (start_date, end_date, airline, dpt_airport, arr_airport))
+				
 			except Exception as e:
 				cursor.execute('SELECT * FROM flight WHERE departure_time BETWEEN %s AND %s AND airline_name = %s', \
 											(curr_date, one_month, airline))
+				
 			flights = cursor.fetchall()
 
 			past_three_month = date.today() + relativedelta(months=-3)
-			cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases WHERE purchase_date \
-											BETWEEN %s AND %s GROUP BY booking_agent_id ORDER BY cnt DESC LIMIT 5', (past_three_month, curr_date))
+			cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket WHERE \
+											purchase_date BETWEEN %s AND %s AND airline_name=%s GROUP BY email, password, booking_agent_id ORDER BY \
+											cnt DESC LIMIT 5', (past_three_month, curr_date, airline))
 			three_month_agents = cursor.fetchall()
-
+		
 			past_year = date.today() + relativedelta(years=-1)
-			cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases WHERE purchase_date \
-											BETWEEN %s AND %s GROUP BY booking_agent_id ORDER BY cnt DESC LIMIT 5', (past_year, curr_date))
+			cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket \
+											WHERE purchase_date BETWEEN %s AND %s AND airline_name=%s GROUP BY email, password, booking_agent_id ORDER BY \
+											cnt DESC LIMIT 5', (past_year, curr_date, airline))
 			past_year_agents = cursor.fetchall()
 
-			cursor.execute('SELECT email, booking_agent_id, sum(price) as commission FROM booking_agent NATURAL JOIN \
-											purchases NATURAL JOIN flight WHERE purchase_date BETWEEN %s AND %s GROUP BY booking_agent_id ORDER BY \
-											commission DESC LIMIT 5', (past_year, curr_date))
+			cursor.execute('SELECT email, booking_agent_id, sum(price*0.2) as commission FROM booking_agent NATURAL JOIN \
+											purchases NATURAL JOIN flight NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND airline_name=%s \
+											GROUP BY email, password, booking_agent_id ORDER BY commission DESC LIMIT 5', (past_year, curr_date, airline))
 			commission_past_year_agent = cursor.fetchall()
 
 			top_customer = frequent_customer()['customer_email']
@@ -80,10 +86,10 @@ def index():
 			try: 
 				report_start_date = request.args['report_start_date']
 				report_end_date = request.args['report_end_date']
-				cursor.execute('SELECT purchase_date FROM purchases WHERE purchase_date BETWEEN %s AND %s', (report_start_date, \
-												report_end_date))
+				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND \
+												airline_name=%s', (report_start_date, report_end_date, airline))
 			except:
-				cursor.execute('SELECT purchase_date FROM purchases')
+				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE airline_name=%s', airline)
 
 			ticket_date = cursor.fetchall()
 
@@ -95,7 +101,7 @@ def index():
 
 			months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", \
 								"November", "December"]
-
+			
 			year_first_day = date(date.today().year, 1, 1)
 			year_last_day = date(date.today().year, 12, 31)
 			pie_chart = create_pie_chart(year_first_day, year_last_day)
@@ -114,12 +120,13 @@ def index():
 
 			cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
 											ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
-											%s AND %s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', (past_three_month, curr_date))
+											%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', \
+											(past_three_month, curr_date, airline))
 			top_destination_month = cursor.fetchall()
 
 			cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
 											ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
-											%s AND %s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', (past_year, curr_date))
+											%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', (past_year, curr_date, airline))
 			top_destination_year = cursor.fetchall()
 
 			try:
@@ -137,10 +144,11 @@ def index():
 																purchase_ticket=purchase_ticket, total=total, top_destination_month=top_destination_month, \
 																top_destination_year=top_destination_year, commission_past_year_agent=commission_past_year_agent)
 		elif (user == "booking_agent"):
+
 			cursor.execute('SELECT booking_agent_id FROM booking_agent WHERE email=%s', username)
 			idnum = cursor.fetchone()["booking_agent_id"]
 			return render_template("booking_agent.html", username=username, idnum=idnum)
-		else: 
+		else:
 			return render_template("customer.html", username=username)
 	except Exception as e:
 		print(e)
@@ -181,16 +189,12 @@ def registerAuth(userType):
 						%s, %s, %s, %s, %s)'
 			cursor.execute(ins, (username, name, password, buildingNo, street, city, state, phoneNum, passportNo, \
 										passportExp, passportCty, dateOfBirth))
+			conn.commit()
 		elif userType == "booking_agent":
-			uniqueID = True
-			while (uniqueID):
-				try:
-					booking_agent_id = random.randint(0, 10**11-1)
-					ins = 'INSERT INTO booking_agent (email, password, booking_agent_id) VALUES(%s, %s, %s)'
-					cursor.execute(ins, (username, password, booking_agent_id))
-					uniqueID = False
-				except:
-					pass
+			booking_agent_id = request.form['booking_agent_id']
+			ins = 'INSERT INTO booking_agent (email, password, booking_agent_id) VALUES(%s, %s, %s)'
+			cursor.execute(ins, (username, password, booking_agent_id))
+			conn.commit()
 		else:
 			fname = request.form['fname']
 			lname = request.form['lname']
@@ -199,8 +203,7 @@ def registerAuth(userType):
 			ins = 'INSERT INTO airline_staff(username, password, first_name, last_name, date_of_birth, airline_name) \
 						VALUES(%s, %s, %s, %s, %s, %s)'
 			cursor.execute(ins, (username, password, fname, lname, dateOfBirth, airline_name))
-		conn.commit()
-		cursor.close()
+			conn.commit()
 	return render_template('login.html')
 
 @app.route('/loginAuth', methods=['GET', 'POST'])
@@ -221,7 +224,6 @@ def loginAuth():
 		session['username'] = username
 		session['type'] = userType
 		conn.commit()
-		cursor.close()
 		return redirect("/")
 	else:
 		error = 'Invalid login.'
@@ -235,7 +237,6 @@ def addAirport():
 	query = 'SELECT * FROM airport WHERE airport_name= %s'
 	cursor.execute(query, airport_name)
 	data = cursor.fetchone()
-
 	if (data):
 		message = "Airport already exists"
 	else:
@@ -243,7 +244,6 @@ def addAirport():
 		message = "Successfully Added"
 		cursor.execute(ins, (airport_name, airport_city))
 		conn.commit()
-		cursor.close()
 	return redirect(url_for('.index', message=message))
 
 @app.route('/addPlane', methods=['GET', 'POST'])
@@ -255,7 +255,7 @@ def addPlane():
 	airline = your_airline()
 
 	if (airline_name == airline):
-		query = 'SELECT * FROM airplane WHERE airline_name= %s and airplane_id=%s'
+		query = 'SELECT * FROM airplane WHERE airline_name=%s and airplane_id=%s'
 		cursor.execute(query, (airline_name, airplane_id))
 		data = cursor.fetchone()
 
@@ -267,7 +267,6 @@ def addPlane():
 			message = "Successfully Added"
 			cursor.execute(ins, (airline_name, airplane_id, seats))
 			conn.commit()
-			cursor.close()
 	except Exception as e:
 			if (str(e) == "local variable 'data' referenced before assignment"):
 				message = "Please add your own airline's plane"
@@ -293,7 +292,9 @@ def createFlights():
 	try:
 		if (airline_name == airline):
 			cursor.execute(ins, (airline_name, flight_num, dpt_airport, dpt_time, arr_airport, dpt_time, price, status, airplane_id))
+			conn.commit()
 			message = "Successfully added"
+
 		else: 
 			message = "Please add your own airline's flight"
 	except Exception as e:
@@ -311,6 +312,7 @@ def updateStatus():
 	flight_num = request.form['flight_num']
 	query = 'UPDATE flight SET status = %s WHERE airline_name = %s AND flight_num = %s'
 	cursor.execute(query, (status, airline_name, flight_num));
+	conn.commit()
 	return redirect("/")
 
 @app.route("/search_flights", methods=['GET', 'POST'])
@@ -354,9 +356,65 @@ def home_search():
 			arrival_airport = (SELECT airport_name FROM airport WHERE airport_city = %s)'
 			cursor.execute(airport, (date, departure_city, arrival_city))
 
-	data = cursor.fetchall()
-	cursor.close()
-	return render_template('search.html', result = data)
+	flights = cursor.fetchall()
+	userType = session['type']
+
+	if (userType == "customer"):
+		return render_template('search.html', flights=flights)
+	else: 
+		return render_template('search1.html', flights=flights)
+
+@app.route('/purchase', methods=['GET', 'POST'])
+def purchaseTicket():
+	try:
+		username = session['username']
+		usertype = session['type']
+		ticket_id = random.randint(0, 2147483647-1)
+		purchase_date = date.today()
+		if (usertype == "customer"):
+			airline_name = request.form['airline_name']
+			flight_num = request.form['flight_num']
+
+			ins = 'INSERT INTO ticket VALUES(%s, %s, %s)'
+
+			cursor.execute(ins, (ticket_id, airline_name, flight_num))
+			conn.commit()
+			ins = 'INSERT INTO purchases(ticket_id, customer_email, booking_agent_id, purchase_date) VALUES(%s, %s, NULL, %s)'
+			cursor.execute(ins, (ticket_id, username, purchase_date))
+		else:
+			email = request.form["email"]
+
+			cursor.execute('SELECT email FROM customer WHERE email=%s', email)
+			data = cursor.fetchone()
+
+			if (data):
+				airline_name = request.form['airline_name']
+				flight_num = request.form['flight_num']
+
+				ins = 'INSERT INTO ticket VALUES(%s, %s, %s)'
+
+				cursor.execute(ins, (ticket_id, airline_name, flight_num))
+				conn.commit()
+				cursor.execute("SELECT booking_agent_id FROM booking_agent WHERE email=%s", username)
+				booking_agent_id = cursor.fetchone()['booking_agent_id']
+				conn.commit()
+				ins = 'INSERT INTO purchases(ticket_id, customer_email, booking_agent_id, purchase_date) VALUES(%s, %s, %s, %s)'
+				message = "Success! You have purchased the ticket!"
+				cursor.execute(ins, (ticket_id, email, booking_agent_id, purchase_date))
+			else:
+				raise ValueError('Cutsomer does not exists')
+
+		return render_template("search.html", message=message, ticket_id=ticket_id)
+	except Exception as e:
+		print(e)
+		if (str(e) == "Cutsomer does not exists"):
+			error = "Cutsomer does not exists"
+		else:
+			error = "Please log in or register"
+		if (usertype == "customer"):
+			return render_template("search.html", error=error)
+		else: 
+			return render_template("search1.html", error=error)
 
 @app.route('/logout')
 def logout():
@@ -364,16 +422,16 @@ def logout():
 	return redirect('/')
 
 def create_pie_chart(start, end):
-	cursor.execute('SELECT * FROM purchases WHERE purchase_date BETWEEN %s AND %s', (start, end))
+	airline = your_airline()
+	cursor.execute('SELECT * FROM purchases NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND \
+									airline_name=%s', (start, end, airline))
 	puchases = cursor.fetchall()
 
 	cust_revenue = 0
 	agent_revenue = 0
 	for bought in puchases:
 		ticket_id = bought['ticket_id']
-		cursor.execute('SELECT airline_name, flight_num FROM ticket WHERE ticket_id=%s', ticket_id)
-		ticket_flight = cursor.fetchone()
-		cursor.execute('SELECT price FROM flight WHERE airline_name=%s AND flight_num=%s', (ticket_flight['airline_name'], ticket_flight['flight_num']))
+		cursor.execute('SELECT price FROM ticket NATURAL JOIN flight WHERE ticket_id=%s AND airline_name=%s', (ticket_id, airline))
 		price = cursor.fetchone()['price']
 		if (bought['booking_agent_id'] == None):
 			cust_revenue += price
@@ -404,17 +462,19 @@ def create_ticket_by_month(months_ticket, total):
 	plot = figure(x_range = months, y_range = (0, (total + 1) * 1.2), plot_height = 300, title="Tickets Purchased By Month")
 	plot.xaxis.major_label_orientation = np.pi/4
 	plot.vbar(x = months, top = months_ticket , width = 0.5, color = "#ff1200")
-	plot.toolbar_location = None
+	plot.toolbar_location = None 
 	return plot
 
 def frequent_customer():
 	first_day = date(date.today().year, 1, 1)
 	last_day = date(date.today().year, 12, 31) 
-	cursor.execute('SELECT * FROM (SELECT customer_email, COUNT(ticket_id) AS purchase_num FROM purchases WHERE purchase_date \
-									BETWEEN %s AND %s GROUP BY customer_email) AS T WHERE purchase_num = \
-									(SELECT MAX(purchase_num))', (first_day, last_day))
+	airline = your_airline()
+	cursor.execute('SELECT * FROM (SELECT customer_email, COUNT(ticket_id) AS purchase_num FROM purchases NATURAL JOIN ticket \
+									WHERE purchase_date BETWEEN %s AND %s AND airline_name = %s GROUP BY customer_email) AS T WHERE purchase_num = \
+									(SELECT MAX(purchase_num))', (first_day, last_day, airline))
 	top_customer = cursor.fetchone()
 	return top_customer
+
 
 app.secret_key = 'b\'e3r\xd7\xf4\xc7g\xd7N\xf5\xefV\xb9\xdf\xed\xf2P%~\t\x8f.X\x91'
 

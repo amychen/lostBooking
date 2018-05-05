@@ -4,6 +4,11 @@
 	<title>Lost Bookings</title>
 	<link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/customer.css')}}">
+	<link href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.css" rel="stylesheet">
+    <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css" rel="stylesheet">
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.5.min.js"></script>
+    {{ script|safe }}
 </head>
 <body>
 	<a href="/logout" id="logout">Logout</a>
@@ -11,7 +16,7 @@
 	{% if username %}
 		<p class="name">Hello <strong>{{username}}</strong></p>
 	{% endif %}
- 
+ 	
 	<h2><a href="/viewFlights">View my flights</a></h2>
 
 	<h2><a href="/search">Search and Purchase</a></h2>

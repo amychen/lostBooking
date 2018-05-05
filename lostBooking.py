@@ -34,148 +34,211 @@ def search():
 
 @app.route("/")
 def index():
-	try:
+	# try:
+	username = session['username']
+	user = session['type']
+	curr_date = date.today()
+	one_month = date.today() + relativedelta(months=+1)
+	one_year = date.today() + relativedelta(years=+1)
 
-		username = session['username']
+	if (user == "airline_staff"):
+		airline = your_airline()
+		try:
+			start_date = request.args['start_date']
+			end_date = request.args['end_date']
+			dpt_airport = request.args['dpt_airport']
+			arr_airport = request.args['arr_airport']
 
-		user = session['type']
-		curr_date = date.today()
-		one_month = date.today() + relativedelta(months=+1)
-		one_year = date.today() + relativedelta(years=+1)
+			cursor.execute('SELECT * FROM flight WHERE departure_time BETWEEN %s AND %s AND airline_name = %s \
+								AND departure_airport=%s AND arrival_airport=%s', (start_date, end_date, airline, dpt_airport, arr_airport))
+			
+		except Exception as e:
+			cursor.execute('SELECT * FROM flight WHERE departure_time BETWEEN %s AND %s AND airline_name = %s', \
+										(curr_date, one_month, airline))
+			
+		flights = cursor.fetchall()
 
-		if (user == "airline_staff"):
-			airline = your_airline()
-			try:
-				start_date = request.args['start_date']
-				end_date = request.args['end_date']
-				dpt_airport = request.args['dpt_airport']
-				arr_airport = request.args['arr_airport']
+		past_three_month = date.today() + relativedelta(months=-3)
+		cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket WHERE \
+										purchase_date BETWEEN %s AND %s AND airline_name=%s GROUP BY email, password, booking_agent_id ORDER BY \
+										cnt DESC LIMIT 5', (past_three_month, curr_date, airline))
+		three_month_agents = cursor.fetchall()
+	
+		past_year = date.today() + relativedelta(years=-1)
+		cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket \
+										WHERE purchase_date BETWEEN %s AND %s AND airline_name=%s GROUP BY email, password, booking_agent_id ORDER BY \
+										cnt DESC LIMIT 5', (past_year, curr_date, airline))
+		past_year_agents = cursor.fetchall()
 
-				cursor.execute('SELECT * FROM flight WHERE departure_time BETWEEN %s AND %s AND airline_name = %s \
-									AND departure_airport=%s AND arrival_airport=%s', (start_date, end_date, airline, dpt_airport, arr_airport))
-				
-			except Exception as e:
-				cursor.execute('SELECT * FROM flight WHERE departure_time BETWEEN %s AND %s AND airline_name = %s', \
-											(curr_date, one_month, airline))
-				
-			flights = cursor.fetchall()
+		cursor.execute('SELECT email, booking_agent_id, sum(price*0.2) as commission FROM booking_agent NATURAL JOIN \
+										purchases NATURAL JOIN flight NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND airline_name=%s \
+										GROUP BY email, password, booking_agent_id ORDER BY commission DESC LIMIT 5', (past_year, curr_date, airline))
+		commission_past_year_agent = cursor.fetchall()
 
-			past_three_month = date.today() + relativedelta(months=-3)
-			cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket WHERE \
-											purchase_date BETWEEN %s AND %s AND airline_name=%s GROUP BY email, password, booking_agent_id ORDER BY \
-											cnt DESC LIMIT 5', (past_three_month, curr_date, airline))
-			three_month_agents = cursor.fetchall()
-		
-			past_year = date.today() + relativedelta(years=-1)
-			cursor.execute('SELECT *, count(booking_agent_id) as cnt FROM booking_agent NATURAL JOIN purchases NATURAL JOIN ticket \
-											WHERE purchase_date BETWEEN %s AND %s AND airline_name=%s GROUP BY email, password, booking_agent_id ORDER BY \
-											cnt DESC LIMIT 5', (past_year, curr_date, airline))
-			past_year_agents = cursor.fetchall()
+		top_customer = frequent_customer()['customer_email']
+		purchase_ticket = frequent_customer()['purchase_num']
 
-			cursor.execute('SELECT email, booking_agent_id, sum(price*0.2) as commission FROM booking_agent NATURAL JOIN \
-											purchases NATURAL JOIN flight NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND airline_name=%s \
-											GROUP BY email, password, booking_agent_id ORDER BY commission DESC LIMIT 5', (past_year, curr_date, airline))
-			commission_past_year_agent = cursor.fetchall()
+		year_first_day = date(date.today().year, 1, 1)
+		year_last_day = date(date.today().year, 12, 31)
+		pie_chart = create_pie_chart(year_first_day, year_last_day)
 
-			top_customer = frequent_customer()['customer_email']
-			purchase_ticket = frequent_customer()['purchase_num']
+		script, div = components(pie_chart[0])
+		cust_revenue_year = pie_chart[1]
+		agent_revenue_year = pie_chart[2]
 
-			year_first_day = date(date.today().year, 1, 1)
-			year_last_day = date(date.today().year, 12, 31)
-			pie_chart = create_pie_chart(year_first_day, year_last_day)
+		pie_chart = create_pie_chart(year_first_day, year_last_day)
+		script1, div1 = components(pie_chart[0])
+		cust_revenue = pie_chart[1]
+		agent_revenue = pie_chart[2]
 
-			script, div = components(pie_chart[0])
-			cust_revenue_year = pie_chart[1]
-			agent_revenue_year = pie_chart[2]
+		try: 
+			report_start_date = request.args['report_start_date']
+			report_end_date = request.args['report_end_date']
+			cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND \
+											airline_name=%s', (report_start_date, report_end_date, airline))
+		except:
+			cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE airline_name=%s', airline)
 
-			pie_chart = create_pie_chart(year_first_day, year_last_day)
-			script1, div1 = components(pie_chart[0])
-			cust_revenue = pie_chart[1]
-			agent_revenue = pie_chart[2]
+		ticket_date = cursor.fetchall()
 
-			try: 
-				report_start_date = request.args['report_start_date']
-				report_end_date = request.args['report_end_date']
-				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND \
-												airline_name=%s', (report_start_date, report_end_date, airline))
-			except:
-				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE airline_name=%s', airline)
+		months_ticket = [0]*12
+		months = []
+		total = 0
 
-			ticket_date = cursor.fetchall()
+		for ticket in ticket_date:
+			months.append(int(str(ticket['purchase_date']).split('-')[1]))
+			total += 1
+		for month in months:
+			months_ticket[month - 1] += 1
+		ticket_by_month = create_ticket_by_month(months_ticket, total)
+		script2, div2 = components(ticket_by_month)
 
-			months_ticket = [0]*12
-			months = []
-			total = 0
+		cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
+										ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
+										%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', \
+										(past_three_month, curr_date, airline))
+		top_destination_month = cursor.fetchall()
+    
+		cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
+										ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
+										%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', (past_year, curr_date, airline))
+		top_destination_year = cursor.fetchall()
 
-			for ticket in ticket_date:
-				months.append(int(str(ticket['purchase_date']).split('-')[1]))
-				total += 1
-			for month in months:
-				months_ticket[month - 1] += 1
-			ticket_by_month = create_ticket_by_month(months_ticket, total)
-			script2, div2 = components(ticket_by_month)
+		try:
+			message = request.args['message']
+			return render_template("airline_staff.html", flights=flights, three_month_agents=three_month_agents, past_year_agents = past_year_agents, \
+															username=username, airline=airline, message=message, div=div, script=script, div1=div1, \
+															script1=script1, script2=script2, div2=div2, agent_revenue_year=agent_revenue_year, cust_revenue_year=cust_revenue_year, \
+															top_customer=top_customer, purchase_ticket=purchase_ticket, total=total, \
+															top_destination_month=top_destination_month, top_destination_year=top_destination_year, \
+															commission_past_year_agent=commission_past_year_agent)
+		except:
+			return render_template("airline_staff.html", flights=flights, three_month_agents=three_month_agents, past_year_agents=past_year_agents, \
+															username=username, airline=airline, div=div, script=script, div1=div1, script1=script1, script2=script2, div2=div2, \
+															agent_revenue_year=agent_revenue, cust_revenue_year=cust_revenue, top_customer=top_customer, \
+															purchase_ticket=purchase_ticket, total=total, top_destination_month=top_destination_month, \
+															top_destination_year=top_destination_year, commission_past_year_agent=commission_past_year_agent)
+	elif (user == "booking_agent"):
+		cursor.execute('SELECT booking_agent_id FROM booking_agent WHERE email=%s', username)
+		idnum = cursor.fetchone()["booking_agent_id"]
+		# try:
+		customers = []
+		tickets = []
+		six_month = agent_frequent_customer("six_month")
+		for cust in six_month:
+			customers.append(cust['customer_email'])
+			tickets.append(cust['purchase_num'])
+		top_by_ticket = booking_agent_bar_graphs(customers, tickets);
+		script, div = components(top_by_ticket)
 
-			cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
-											ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
-											%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', \
-											(past_three_month, curr_date, airline))
-			top_destination_month = cursor.fetchall()
-      
-			cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
-											ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
-											%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', (past_year, curr_date, airline))
-			top_destination_year = cursor.fetchall()
+		commission = agent_frequent_customer("year")
+		customer = []
+		c = []
+		for cust in commission:
+			customers.append(cust['customer_email'])
+			c.append(cust['commission'])
+		top_by_ticket = bar_graph_by_commissions(customers, c);
+		script1, div1 = components(top_by_ticket)
 
-			try:
-				message = request.args['message']
-				return render_template("airline_staff.html", flights=flights, three_month_agents=three_month_agents, past_year_agents = past_year_agents, \
-																username=username, airline=airline, message=message, div=div, script=script, div1=div1, \
-																script1=script1, script2=script2, div2=div2, agent_revenue_year=agent_revenue_year, cust_revenue_year=cust_revenue_year, \
-																top_customer=top_customer, purchase_ticket=purchase_ticket, total=total, \
-																top_destination_month=top_destination_month, top_destination_year=top_destination_year, \
-																commission_past_year_agent=commission_past_year_agent)
-			except:
-				return render_template("airline_staff.html", flights=flights, three_month_agents=three_month_agents, past_year_agents=past_year_agents, \
-																username=username, airline=airline, div=div, script=script, div1=div1, script1=script1, script2=script2, div2=div2, \
-																agent_revenue_year=agent_revenue, cust_revenue_year=cust_revenue, top_customer=top_customer, \
-																purchase_ticket=purchase_ticket, total=total, top_destination_month=top_destination_month, \
-																top_destination_year=top_destination_year, commission_past_year_agent=commission_past_year_agent)
-		elif (user == "booking_agent"):
-			cursor.execute('SELECT booking_agent_id FROM booking_agent WHERE email=%s', username)
-			idnum = cursor.fetchone()["booking_agent_id"]
-			return render_template("booking_agent.html", username=username, idnum=idnum)
-		else:
-			return render_template("customer.html", username=username)
-	except Exception as e:
-		print(e)
-		return render_template('index.html')
+		return render_template("booking_agent.html", username=username, idnum=idnum, script=script, div=div, script1=script1, div1=div1)
+			# except Exception as e:
+			# 	print(e)
+			# 	pass
+
+		return render_template("booking_agent.html", username=username, idnum=idnum)
+	else:
+		return render_template("customer.html", username=username)
+	# except Exception as e:
+	# 	print(e)
+	# 	return render_template('index.html')
 
 @app.route('/track', methods=['GET', 'POST'])
 def trackspending():
 	username = session["username"]
 	curr_date = date.today()
 	past_year = date.today() + relativedelta(years=-1)
-	past_year = "SELECT sum(price) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
-							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
-	cursor.execute(past_year, (username, past_year, curr_date))
-	past_year_expense = cursor.fetchone()['sum(price)']
+
 	monthly_expense = [0] * 12
-
 	month_ago = date.today() + relativedelta(months=-1)
-	query = "SELECT purchase_date, price FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
-							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
-	cursor.execute(query, (username, month_ago, date.today()))
-	month_expense = cursor.fetchall()
-
 	months = []
-	for month in month_expense:
-		months.append(int(str(month['purchase_date']).split('-')[1]))
-	for m in months:
-		monthly_expense[m - 1] += month['price']
-	expense = track_my_spending(monthly_expense)
 
-	script3, div3 = components(expense)
+	try:
+		start = request.form["start_date"]
+		end = request.form["end_date"]
+		cursor.execute("SELECT sum(price) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s", username, start, end)
+		past_year_expense = cursor.fetchone()['sum(price)']
+
+		cursor.execute("SELECT sum(price) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s", (username, start, end))
+		month_expense = cursor.fetchall()
+	except:
+
+		cursor.execute("SELECT sum(price) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+								WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s", (username, past_year, curr_date))
+		past_year_expense = cursor.fetchone()['sum(price)']
+		
+		query = "SELECT purchase_date, price FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+								WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
+		cursor.execute(query, (username, month_ago, date.today()))
+		month_expense = cursor.fetchall()
+
+	finally:
+		for month in month_expense:
+			months.append(int(str(month['purchase_date']).split('-')[1]))
+		for m in months:
+			monthly_expense[m - 1] += month['price']
+		expense = track_my_spending(monthly_expense)
+		script3, div3 = components(expense)
 	return render_template('track.html', username = username, script3 = script3, div3 = div3, past_year_expense = past_year_expense)
+
+@app.route('/myCommissions', methods=['GET', 'POST'])
+def myCommissions():
+	username = session["username"]
+	curr_date = date.today()
+	one_month = date.today() + relativedelta(months=-1)
+	cursor.execute('SELECT booking_agent_id FROM booking_agent WHERE email=%s', username)
+	idnum = cursor.fetchone()["booking_agent_id"]
+	try:
+		start = request.form["start_date"]
+		end = request.form["end_date"]
+		cursor.execute("SELECT sum(price) * 0.2 as commission FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+										WHERE booking_agent_id=%s AND purchase_date BETWEEN %s AND %s", (idnum, start, end))
+		total_commission = cursor.fetchone()['commission']
+		cursor.execute("SELECT count(*) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+										WHERE booking_agent_id=%s AND purchase_date BETWEEN %s AND %s", (idnum, start, end))
+		total_ticket = cursor.fetchone()['count(*)'];
+
+	except:
+		cursor.execute("SELECT sum(price) * 0.2 as commission FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+										WHERE booking_agent_id=%s AND purchase_date BETWEEN %s AND %s", (idnum, one_month, curr_date))
+		total_commission = cursor.fetchone()['commission'];
+		cursor.execute("SELECT count(*) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+										WHERE booking_agent_id=%s AND purchase_date BETWEEN %s AND %s", (idnum, one_month, curr_date))
+		total_ticket = cursor.fetchone()['count(*)'];
+
+	avg = int((total_commission/total_ticket))
+	return render_template('commission.html', username=username, total_commission=total_commission, total_ticket=total_ticket, avg=avg)
 
 
 @app.route('/registerAuth/<userType>', methods=['GET', 'POST'])
@@ -445,7 +508,6 @@ def purchaseTicket():
 		else: 
 			return render_template("search1.html", error=error)
 
-
 @app.route('/viewFlights', methods=['GET', 'POST'])
 def view_flight():
     return render_template('viewmyflight.html')
@@ -539,9 +601,24 @@ def create_ticket_by_month(months_ticket, total):
 def track_my_spending(month_expense):
 	months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", \
 																"November", "December"]
-	plot = figure(x_range = months, y_range = (0, 8 * 1.2), plot_height = 300, title="Tickets Purchased By Month")
+	plot = figure(x_range = months, y_range = (0, 8 * 20), plot_height = 300, title="Tickets Purchased By Month")
 	plot.xaxis.major_label_orientation = np.pi/4
 	plot.vbar(x = months, top = month_expense , width = 0.5, color = "#ff1200")
+	plot.toolbar_location = None 
+	return plot
+
+def booking_agent_bar_graphs(email, tickets):
+
+	plot = figure(x_range = email, y_range = (0, 40), plot_height = 300, title="Tickets Purchased By Month in Last 6 Months")
+	plot.xaxis.major_label_orientation = np.pi/4
+	plot.vbar(x = email, top = tickets , width = 0.5, color = "#ff1200")
+	plot.toolbar_location = None 
+	return plot
+
+def bar_graph_by_commissions(email, commission):
+	plot = figure(x_range = email, y_range = (0, 2000), plot_height = 300, title="Commissions Based on Last Year")
+	plot.xaxis.major_label_orientation = np.pi/4
+	plot.vbar(x = email, top = commission , width = 0.5, color = "#ff1200")
 	plot.toolbar_location = None 
 	return plot
 
@@ -554,6 +631,20 @@ def frequent_customer():
 									(SELECT MAX(purchase_num))', (first_day, last_day, airline))
 	top_customer = cursor.fetchone()
 	return top_customer
+
+def agent_frequent_customer(showType):
+	today = date.today()
+		
+	if (showType=="six_month"):
+		six_month = date.today() + relativedelta(months=-6)
+		cursor.execute('SELECT * FROM (SELECT customer_email, COUNT(ticket_id) AS purchase_num FROM purchases NATURAL JOIN ticket \
+									WHERE purchase_date BETWEEN %s AND %s GROUP BY customer_email) AS T ORDER BY purchase_num DESC LIMIT 5', (six_month, today))
+	else:
+		one_year = date.today() + relativedelta(years=-1)
+		cursor.execute('SELECT * FROM (SELECT customer_email, sum(price) * 0.2 as commission FROM purchases NATURAL JOIN ticket NATURAL JOIN flight\
+									WHERE purchase_date BETWEEN %s AND %s GROUP BY customer_email) AS T ORDER BY commission DESC LIMIT 5', (one_year, today))
+	top_5 = cursor.fetchall()
+	return top_5 
 
 
 app.secret_key = 'b\'e3r\xd7\xf4\xc7g\xd7N\xf5\xefV\xb9\xdf\xed\xf2P%~\t\x8f.X\x91'

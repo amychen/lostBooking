@@ -80,8 +80,6 @@ def index():
 			top_customer = frequent_customer()['customer_email']
 			purchase_ticket = frequent_customer()['purchase_num']
 
-			
-
 			year_first_day = date(date.today().year, 1, 1)
 			year_last_day = date(date.today().year, 12, 31)
 			pie_chart = create_pie_chart(year_first_day, year_last_day)
@@ -91,7 +89,7 @@ def index():
 			agent_revenue_year = pie_chart[2]
 
 			pie_chart = create_pie_chart(year_first_day, year_last_day)
-			script, div = components(pie_chart[0])
+			script1, div1 = components(pie_chart[0])
 			cust_revenue = pie_chart[1]
 			agent_revenue = pie_chart[2]
 
@@ -132,13 +130,13 @@ def index():
 				message = request.args['message']
 				return render_template("airline_staff.html", flights=flights, three_month_agents=three_month_agents, past_year_agents = past_year_agents, \
 																username=username, airline=airline, message=message, div=div, script=script, div1=div1, \
-																script1=script1, agent_revenue_year=agent_revenue_year, cust_revenue_year=cust_revenue_year, \
+																script1=script1, script2=script2, div2=div2, agent_revenue_year=agent_revenue_year, cust_revenue_year=cust_revenue_year, \
 																top_customer=top_customer, purchase_ticket=purchase_ticket, total=total, \
 																top_destination_month=top_destination_month, top_destination_year=top_destination_year, \
 																commission_past_year_agent=commission_past_year_agent)
 			except:
 				return render_template("airline_staff.html", flights=flights, three_month_agents=three_month_agents, past_year_agents=past_year_agents, \
-																username=username, airline=airline, div=div, script=script, div1=div1, script1=script1, \
+																username=username, airline=airline, div=div, script=script, div1=div1, script1=script1, script2=script2, div2=div2, \
 																agent_revenue_year=agent_revenue, cust_revenue_year=cust_revenue, top_customer=top_customer, \
 																purchase_ticket=purchase_ticket, total=total, top_destination_month=top_destination_month, \
 																top_destination_year=top_destination_year, commission_past_year_agent=commission_past_year_agent)
@@ -160,8 +158,7 @@ def trackspending():
 	past_year = "SELECT sum(price) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
 							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
 	cursor.execute(past_year, (username, past_year, curr_date))
-	past_year_expense = cursor.fetchall()
-	print('1111111', past_year_expense)
+	past_year_expense = cursor.fetchone()['sum(price)']
 	monthly_expense = [0] * 12
 
 	month_ago = date.today() + relativedelta(months=-1)
@@ -169,31 +166,15 @@ def trackspending():
 							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
 	cursor.execute(query, (username, month_ago, date.today()))
 	month_expense = cursor.fetchall()
-	print('222222', month_expense )
 
 	months = []
 	for month in month_expense:
 		months.append(int(str(month['purchase_date']).split('-')[1]))
 	for m in months:
 		monthly_expense[m - 1] += month['price']
-	# month = str(date.today())[5:7]
-	# for i in range (1, 7):
-	# 	month_ago = date.today() + relativedelta(months=-i)
-	# 	one_ago = date.today() + relativedelta(months=-(i-1)) 
-	# 	print(one_ago)
-	# 	month_expense = "SELECT sum(price) FROM flight WHERE flight_num in (SELECT flight_num FROM ticket WHERE \
-	# 							ticket_id IN (SELECT ticket_id FROM purchases WHERE customer_email = %s \
-	# 							AND purchase_date BETWEEN %s AND %s))"
-	# 	cursor.execute(month_expense, (username, one_ago, month_ago))
-	# 	a = cursor.fetchone()
-	# 	print(a)
-	# 	one_month_expense = a["sum(price)"]
-	# 	print(one_month_expense)
-	# 	monthly_expense[int(month) - i] = one_month_expense
 	expense = track_my_spending(monthly_expense)
 
 	script3, div3 = components(expense)
-	# return render_template('track.html');
 	return render_template('track.html', username = username, script3 = script3, div3 = div3, past_year_expense = past_year_expense)
 
 

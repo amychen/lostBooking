@@ -8,23 +8,23 @@
     <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.0.min.css" rel="stylesheet">
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.5.min.js"></script>
     <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.5.min.js"></script>
+    {{ script|safe }}
+    {{ script3|safe }}
 </head>
 <body>
 	<a href="/logout" id="logout">Logout</a>
 
+	{{past_year_expense}}
+
 	{% if username %}
-		<p class="name">Hello <strong> {{username}} </strong></p>
-		<p class="name">Your booking agent ID is <strong>{{idnum}}</strong> </p>
+		<p class="name">Hello <strong>{{username}} </strong> </p>
 	{% endif %}
 
-	<h2><a href="/viewFlights">View my flights</a></h2>
+	<div id="bargraph">{{ div3|safe }}</div>
+	<h2>Your spend for last 6 months.</h2>
+
+
 	
-	<h2><a href="/search">Search and Purchase</a></h2>
-
-	<h2>My Commission</h2>
-
-	<h2>Top Customers</h2>
-
 	<script type="text/javascript" src="{{url_for('static',filename='js/booking_agent.js')}}"></script>
 </body>
 </html>

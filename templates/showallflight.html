@@ -1,0 +1,53 @@
+<html>
+<head>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+table, td, th {
+    border: 1px solid black;
+}
+</style>
+</head>
+<body style="background-image: url('/static/travel.jpg')">
+
+
+<form action = '/viewFlights' method = 'Get'>
+
+  <table>
+    <th>Airline Name</th>
+    <th>Flight Number</th>
+    <th>Departure Airport</th>
+    <th>Departure Time</th>
+    <th>Arrival Airport</th>
+    <th>Arrival Time</th>
+    <th>Price</th>
+    <th>Status</th>
+    <th>Airplane Type</th>
+
+    
+
+  {% for line in result %}
+    <tr>
+      <td>{{line.airline_name}}</td>
+      <td>{{line.flight_num}}</td>
+      <td>{{line.departure_airport}}</td>
+      <td>{{line.departure_time}}</td>
+      <td>{{line.arrival_airport}}</td>
+      <td>{{line.arrival_time}}</td>
+      <td>{{line.price}}</td>
+      <td>{{line.status}}</td>
+      <td>{{line.airplane_id}}</td>
+    </tr>
+  {% endfor %}
+  </table>
+  
+</form>
+<form action = '/viewFlights' method = 'Get'>
+  <button type="submit" id="backbtn">Back</button>
+</form>
+
+
+
+</body>

@@ -8,6 +8,7 @@ from bokeh.charts import Donut, show
 import pandas as pd
 import numpy as np
 
+
 app = Flask(__name__)
 conn = pymysql.connect(host='localhost',
 											 user='root',
@@ -79,29 +80,8 @@ def index():
 			top_customer = frequent_customer()['customer_email']
 			purchase_ticket = frequent_customer()['purchase_num']
 
-			months_ticket = [0]*12
-			months = []
-			total = 0
-
-			try: 
-				report_start_date = request.args['report_start_date']
-				report_end_date = request.args['report_end_date']
-				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND \
-												airline_name=%s', (report_start_date, report_end_date, airline))
-			except:
-				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE airline_name=%s', airline)
-
-			ticket_date = cursor.fetchall()
-
-			for ticket in ticket_date:
-				months.append(int(str(ticket['purchase_date']).split('-')[1]))
-				total += 1
-			for month in months:
-				months_ticket[month - 1] += 1
-
-			months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", \
-								"November", "December"]
 			
+
 			year_first_day = date(date.today().year, 1, 1)
 			year_last_day = date(date.today().year, 12, 31)
 			pie_chart = create_pie_chart(year_first_day, year_last_day)
@@ -115,15 +95,34 @@ def index():
 			cust_revenue = pie_chart[1]
 			agent_revenue = pie_chart[2]
 
+			try: 
+				report_start_date = request.args['report_start_date']
+				report_end_date = request.args['report_end_date']
+				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE purchase_date BETWEEN %s AND %s AND \
+												airline_name=%s', (report_start_date, report_end_date, airline))
+			except:
+				cursor.execute('SELECT purchase_date FROM purchases NATURAL JOIN ticket WHERE airline_name=%s', airline)
+
+			ticket_date = cursor.fetchall()
+
+			months_ticket = [0]*12
+			months = []
+			total = 0
+
+			for ticket in ticket_date:
+				months.append(int(str(ticket['purchase_date']).split('-')[1]))
+				total += 1
+			for month in months:
+				months_ticket[month - 1] += 1
 			ticket_by_month = create_ticket_by_month(months_ticket, total)
-			script1, div1 = components(ticket_by_month)
+			script2, div2 = components(ticket_by_month)
 
 			cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
 											ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
 											%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', \
 											(past_three_month, curr_date, airline))
 			top_destination_month = cursor.fetchall()
-
+      
 			cursor.execute('SELECT airport_city, count(arrival_airport) as cnt FROM purchases NATURAL JOIN \
 											ticket NATURAL JOIN flight JOIN airport WHERE airport_name = arrival_airport AND purchase_date BETWEEN \
 											%s AND %s AND airline_name=%s GROUP BY arrival_airport ORDER BY cnt DESC LIMIT 3', (past_year, curr_date, airline))
@@ -144,7 +143,6 @@ def index():
 																purchase_ticket=purchase_ticket, total=total, top_destination_month=top_destination_month, \
 																top_destination_year=top_destination_year, commission_past_year_agent=commission_past_year_agent)
 		elif (user == "booking_agent"):
-
 			cursor.execute('SELECT booking_agent_id FROM booking_agent WHERE email=%s', username)
 			idnum = cursor.fetchone()["booking_agent_id"]
 			return render_template("booking_agent.html", username=username, idnum=idnum)
@@ -153,6 +151,51 @@ def index():
 	except Exception as e:
 		print(e)
 		return render_template('index.html')
+
+@app.route('/track', methods=['GET', 'POST'])
+def trackspending():
+	username = session["username"]
+	curr_date = date.today()
+	past_year = date.today() + relativedelta(years=-1)
+	past_year = "SELECT sum(price) FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
+	cursor.execute(past_year, (username, past_year, curr_date))
+	past_year_expense = cursor.fetchall()
+	print('1111111', past_year_expense)
+	monthly_expense = [0] * 12
+
+	month_ago = date.today() + relativedelta(months=-1)
+	query = "SELECT purchase_date, price FROM flight NATURAL JOIN purchases NATURAL JOIN ticket \
+							WHERE customer_email = %s AND purchase_date BETWEEN %s AND %s"
+	cursor.execute(query, (username, month_ago, date.today()))
+	month_expense = cursor.fetchall()
+	print('222222', month_expense )
+
+	months = []
+	for month in month_expense:
+		months.append(int(str(month['purchase_date']).split('-')[1]))
+	for m in months:
+		monthly_expense[m - 1] += month['price']
+	# month = str(date.today())[5:7]
+	# for i in range (1, 7):
+	# 	month_ago = date.today() + relativedelta(months=-i)
+	# 	one_ago = date.today() + relativedelta(months=-(i-1)) 
+	# 	print(one_ago)
+	# 	month_expense = "SELECT sum(price) FROM flight WHERE flight_num in (SELECT flight_num FROM ticket WHERE \
+	# 							ticket_id IN (SELECT ticket_id FROM purchases WHERE customer_email = %s \
+	# 							AND purchase_date BETWEEN %s AND %s))"
+	# 	cursor.execute(month_expense, (username, one_ago, month_ago))
+	# 	a = cursor.fetchone()
+	# 	print(a)
+	# 	one_month_expense = a["sum(price)"]
+	# 	print(one_month_expense)
+	# 	monthly_expense[int(month) - i] = one_month_expense
+	expense = track_my_spending(monthly_expense)
+
+	script3, div3 = components(expense)
+	# return render_template('track.html');
+	return render_template('track.html', username = username, script3 = script3, div3 = div3, past_year_expense = past_year_expense)
+
 
 @app.route('/registerAuth/<userType>', methods=['GET', 'POST'])
 def registerAuth(userType):
@@ -376,14 +419,19 @@ def purchaseTicket():
 			flight_num = request.form['flight_num']
 
 			ins = 'INSERT INTO ticket VALUES(%s, %s, %s)'
-
 			cursor.execute(ins, (ticket_id, airline_name, flight_num))
 			conn.commit()
 			ins = 'INSERT INTO purchases(ticket_id, customer_email, booking_agent_id, purchase_date) VALUES(%s, %s, NULL, %s)'
 			cursor.execute(ins, (ticket_id, username, purchase_date))
+			conn.commit();
+
+			ins = 'SELECT ticket_id FROM ticket'
+			cursor.execute(ins)
+			a = cursor.fetchall()
+			print(a)
+
 		else:
 			email = request.form["email"]
-
 			cursor.execute('SELECT email FROM customer WHERE email=%s', email)
 			data = cursor.fetchone()
 
@@ -392,18 +440,18 @@ def purchaseTicket():
 				flight_num = request.form['flight_num']
 
 				ins = 'INSERT INTO ticket VALUES(%s, %s, %s)'
-
 				cursor.execute(ins, (ticket_id, airline_name, flight_num))
-				conn.commit()
 				cursor.execute("SELECT booking_agent_id FROM booking_agent WHERE email=%s", username)
 				booking_agent_id = cursor.fetchone()['booking_agent_id']
-				conn.commit()
+				
 				ins = 'INSERT INTO purchases(ticket_id, customer_email, booking_agent_id, purchase_date) VALUES(%s, %s, %s, %s)'
-				message = "Success! You have purchased the ticket!"
+				
+
 				cursor.execute(ins, (ticket_id, email, booking_agent_id, purchase_date))
+				conn.commit();
 			else:
 				raise ValueError('Cutsomer does not exists')
-
+		message = "Success! You have purchased the ticket!"
 		return render_template("search.html", message=message, ticket_id=ticket_id)
 	except Exception as e:
 		print(e)
@@ -416,6 +464,48 @@ def purchaseTicket():
 		else: 
 			return render_template("search1.html", error=error)
 
+
+@app.route('/viewFlights', methods=['GET', 'POST'])
+def view_flight():
+    return render_template('viewmyflight.html')
+
+@app.route('/myflight', methods=['GET', 'POST'])
+def my_flight():
+    from_date = request.form['From Date']
+    to_date = request.form['To Date']
+    username = session['username'] 
+    
+    cursor = conn.cursor()
+    
+    if to_date < str(date.today()) or from_date > str(date.today()) or from_date > to_date:
+        return render_template('overdue.html')
+    
+    if len(from_date) > 0 and len(to_date) > 0:
+        all_flight = "SELECT * FROM flight WHERE status = 'UPCOMING' AND date(departure_time) BETWEEN %s AND %s \
+                      AND flight_num IN (SELECT flight_num FROM ticket WHERE ticket_id IN(SELECT ticket_id \
+                      FROM purchases WHERE customer_email = %s))"
+        cursor.execute(all_flight, (from_date, to_date, username))
+    elif len(from_date) > 0:
+        all_flight = "SELECT * FROM flight WHERE status = 'UPCOMING' AND date(departure_time) > %s\
+                      AND flight_num IN (SELECT flight_num FROM ticket WHERE ticket_id IN(SELECT ticket_id \
+                      FROM purchases WHERE customer_email = %s))"
+        cursor.execute(all_flight, (from_date, username))
+    elif len(to_date) > 0:
+        all_flight = "SELECT * FROM flight WHERE status = 'UPCOMING' AND date(departure_time) < %s\
+                      AND flight_num IN (SELECT flight_num FROM ticket WHERE ticket_id IN(SELECT ticket_id \
+                      FROM purchases WHERE customer_email = %s))"
+        cursor.execute(all_flight, (to_date, username))
+    else:
+        all_flight = "SELECT * FROM flight WHERE status = 'UPCOMING'\
+                      AND flight_num IN (SELECT flight_num FROM ticket WHERE ticket_id IN(SELECT ticket_id \
+                      FROM purchases WHERE customer_email = %s))"
+        cursor.execute(all_flight, (username))
+    
+    
+    data = cursor.fetchall()
+    cursor.close()
+    print(data)
+    return render_template('showallflight.html', result = data)
 @app.route('/logout')
 def logout():
 	session.pop('username')
@@ -462,6 +552,15 @@ def create_ticket_by_month(months_ticket, total):
 	plot = figure(x_range = months, y_range = (0, (total + 1) * 1.2), plot_height = 300, title="Tickets Purchased By Month")
 	plot.xaxis.major_label_orientation = np.pi/4
 	plot.vbar(x = months, top = months_ticket , width = 0.5, color = "#ff1200")
+	plot.toolbar_location = None 
+	return plot
+
+def track_my_spending(month_expense):
+	months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", \
+																"November", "December"]
+	plot = figure(x_range = months, y_range = (0, 8 * 1.2), plot_height = 300, title="Tickets Purchased By Month")
+	plot.xaxis.major_label_orientation = np.pi/4
+	plot.vbar(x = months, top = month_expense , width = 0.5, color = "#ff1200")
 	plot.toolbar_location = None 
 	return plot
 

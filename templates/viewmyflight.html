@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"> 
+
+<style>
+h1 {font-size:30px;}
+p {font-size:20px;}
+</style>
+
+<style>
+.center {
+    margin: auto;
+    width: 60%;
+    border: 3px solid #F6E0D6;
+    padding: 10px;
+}
+</style>
+
+</head>
+
+<body style="background-image: url('/static/travel.jpg')">
+<style type="text/css">
+  table, th, td{
+    border: 2px solid black;
+  }
+</style>
+
+<div class = 'center'>
+	<h1>View My Upcoming Flights</h1>
+	  
+	<form action='/myflight' method="post" target="_blank">
+	  <p>From: <input type="date" placeholder="Date" name="From Date"></p>
+	  <p>To: <input type="date" placeholder="Date" name="To Date"></p>
+	  <button type="submit" id="checkbtn">Check My Upcoming Flights</button>
+	</form>
+
+	 <form action = '/' method = 'Get'>
+  	 <button type="submit" id="backbtn">Back</button>
+   </form>
+</div>
+
+
+
+</body>

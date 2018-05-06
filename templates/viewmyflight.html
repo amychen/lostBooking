@@ -27,19 +27,23 @@ p {font-size:20px;}
 </style>
 
 <div class = 'center'>
-	<h1>View My Upcoming Flights</h1>
-	  
-	<form action='/myflight' method="post" target="_blank">
-	  <p>From: <input type="date" placeholder="Date" name="From Date"></p>
-	  <p>To: <input type="date" placeholder="Date" name="To Date"></p>
-	  <button type="submit" id="checkbtn">Check My Upcoming Flights</button>
-	</form>
+  <h1>View My Upcoming Flights</h1>
+    
+  <form action='/myflight' method="post" target="_blank">
+    <p>Search By Dates</p>
+    <p>From: <input type="date" placeholder="Date" name="From Date"></p>
+    <p>To: <input type="date" placeholder="Date" name="To Date"></p>
+    <p>Search By Detination Cities</p>
+    <p>From: <input type="search" placeholder="Departure City" name="Departure City"></p>
+    <p>To: <input type="search" placeholder="Arrival City" name="Arrival City"></p>
+    <p>Search By Detination Airports</p>
+    <p>From: <input type="search" placeholder="Departure Airport" name="Departure Airport"></p>
+    <p>To: <input type="search" placeholder="Arrival Airport" name="Arrival Airport"></p>
+    <button type="submit" id="checkbtn">Check My Upcoming Flights</button>
+  </form>
 
-	 <form action = '/' method = 'Get'>
-  	 <button type="submit" id="backbtn">Back</button>
-   </form>
+   <form action = '/homepage' method = 'Get'>
+     <button type="submit" id="backbtn">Home</button>
+     </form>
 </div>
-
-
-
 </body>

@@ -43,6 +43,7 @@
         <th>Arrival Airport</th>
         <th>Arrival Time</th>
         <th>Price</th>
+        <th>Status</th>
         <th>Airplane ID</th>
         <th>Purchase Ticket</th>
         {% for flight in flights %}
@@ -53,6 +54,7 @@
           <td>{{flight.arrival_airport}}</td>
           <td>{{flight.arrival_time}}</td>
           <td>{{flight.price}}</td>
+          <td>{{flight.status}}</td>
           <td>{{flight.airplane_id}}</td>
           <td><button type="submit" class="purchaseButton" onClick="purchaseTicket(this)">Purchase</button></td>
         </tr>

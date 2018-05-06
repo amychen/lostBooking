@@ -12,12 +12,30 @@
 	<h1 id="headerName">Lost Booking</h1>
 	<div id="search">
 		<form action = '/homesearch' method = 'POST'>
+			<h1>Search For Upcoming Flights By City</h1>
 			<input type="search" placeholder="Departure City" name="Departure City" id="searchinput" autocomplete="off">
-			<input type="search" placeholder="Departure Airport(optional)" name="Departure Airport" id="searchinput" autocomplete="off">
 			<input type="search" placeholder="Arrival City" name="Arrival City" id="searchinput" autocomplete="off">
-			<input type="search" placeholder="Arrival Airport(optional)" name="Arrival Airport" id="searchinput" autocomplete="off">
-			<input type="date" placeholder="Date" name="Date" id="searchinput" autocomplete="off">
-			<br>
+			<p>Departure Date</p>
+			<input type="date" placeholder="Date" name="Departure Date" id="searchinput" autocomplete="off">
+			<p>Arrival Date</p>
+			<input type="date" placeholder="Arrival Date" name="Arrival Date" id="searchinput" autocomplete="off">
+
+
+			<h1>Search For Upcoming Flights By Aiport</h1>
+			<input type="search" placeholder="Departure Airport" name="Departure Airport" id="searchinput" autocomplete="off">
+			<input type="search" placeholder="Arrival Airport" name="Arrival Airport" id="searchinput" autocomplete="off">
+			<p>Departure Date</p>
+			<input type="date" placeholder="Date" name="Departure Date" id="searchinput" autocomplete="off">
+			<p>Arrival Date</p>
+			<input type="date" placeholder="Arrival Date" name="Arrival Date" id="searchinput" autocomplete="off">
+
+			<h1>Search Status of Flight By Flight Number</h1>
+			<input type="search" placeholder="Flight Number" name="Flight Number" id="searchinput" autocomplete="off">
+			<p>Departure Date</p>
+			<input type="date" placeholder="Date" name="Departure Date" id="searchinput" autocomplete="off">
+			<p>Arrival Date</p>
+			<input type="date" placeholder="Arrival Date" name="Arrival Date" id="searchinput" autocomplete="off">
+			<br><br>
 			<button type="submit" id="searchbtn">Search</button>
 		</form>
 	</div>

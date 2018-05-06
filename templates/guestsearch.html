@@ -9,22 +9,29 @@ table, td, th {
     border: 1px solid black;
 }
 </style>
+
+<style>
+h1 {font-size:40px;}
+p {font-size:20px;}
+</style>
+
 </head>
 <body style="background-image: url('/static/travel.jpg')">
 
+<h1>Searching Results -</h1>
 
-<form action = '/viewFlights' method = 'Get'>
-
+<form action = '/purchasepage' method = 'Get'>
+  <p>
   <table>
     <th>Airline Name</th>
     <th>Flight Number</th>
-    <th>Departure Airport</th>
     <th>Departure Time</th>
     <th>Arrival Airport</th>
     <th>Arrival Time</th>
     <th>Price</th>
     <th>Status</th>
-    <th>Airplane Type</th>
+    <th>Airplane_id</th>
+    <th>Purchase Ticket</th>
 
     
 
@@ -32,19 +39,30 @@ table, td, th {
     <tr>
       <td>{{line.airline_name}}</td>
       <td>{{line.flight_num}}</td>
-      <td>{{line.departure_airport}}</td>
       <td>{{line.departure_time}}</td>
       <td>{{line.arrival_airport}}</td>
       <td>{{line.arrival_time}}</td>
       <td>{{line.price}}</td>
       <td>{{line.status}}</td>
       <td>{{line.airplane_id}}</td>
+      <td><button type="submit">Purchase</button></td>
     </tr>
   {% endfor %}
   </table>
+
+  </p>
   
-  </form>
-  <form action = '/viewFlights' method = 'Get'>
-    <button type="submit" id="backbtn">Back</button>
-  </form>
+</form>
+
+<form action = '/homepage' method = 'Get'>
+<button type="submit" id="backbtn">Back</button>
+</form>
+
+
+
 </body>
+
+
+</html>
+
+
